@@ -19,10 +19,11 @@ import java.util.*;
 public class AppUserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND = "user %s not found";
-    private final AppUserRepository appUserRepository;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final RoleRepository roleRepository;
+    private final AppUserRepository appUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
