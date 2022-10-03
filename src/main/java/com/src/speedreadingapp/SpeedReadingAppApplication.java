@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+//exclude={DataSourceAutoConfiguration.class}
+@SpringBootApplication()
 public class SpeedReadingAppApplication {
 
 	public static void main(String[] args) {

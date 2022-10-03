@@ -1,0 +1,21 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  datasource:
+    password: 0094bbb7a0276dc53fce373dd4d7fe31c1226e4f9e8b26557738b169e61e01a4
+    url: jdbc:postgresql://ec2-3-248-121-12.eu-west-1.compute.amazonaws.com:5432/d28l7etfqvmk8h
+    username: fhxxihuyitgkmv
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+
+

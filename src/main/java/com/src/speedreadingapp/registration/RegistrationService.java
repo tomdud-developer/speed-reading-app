@@ -2,6 +2,7 @@ package com.src.speedreadingapp.registration;
 
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
+import com.src.speedreadingapp.registration.emailsender.EmailBuilder;
 import com.src.speedreadingapp.registration.emailsender.EmailSender;
 import com.src.speedreadingapp.registration.token.ConfirmationToken;
 import com.src.speedreadingapp.registration.token.ConfirmationTokenService;
@@ -49,7 +50,7 @@ public class RegistrationService {
         );
 
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-        //emailSender.send(request.getEmail(), EmailBuilder.buildEmail(request.getFirstname(), link));
+        emailSender.send(request.getEmail(), EmailBuilder.buildEmail(request.getFirstname(), link));
 
         return token;
     }

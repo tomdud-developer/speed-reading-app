@@ -1,17 +1,14 @@
 package com.src.speedreadingapp.registration.token;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ConfirmationTokenService {
     private final ConfirmationTokenRepository confirmationTokenRepository;
-
-    public ConfirmationTokenService(ConfirmationTokenRepository confirmationTokenRepository) {
-        this.confirmationTokenRepository = confirmationTokenRepository;
-    }
 
     public void saveConfirmationToken(ConfirmationToken token) {
         confirmationTokenRepository.save(token);

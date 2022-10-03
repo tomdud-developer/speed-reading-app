@@ -26,14 +26,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers("/api/login", "/api/v1/user/test2", "/api/v1/files/**").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
+        http.authorizeRequests().antMatchers("/api/v1/registration").permitAll();
+        //http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
 
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("**"));
+        configuration.setAllowedOrigins(List.of("/**", "localhost:3000"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         // setAllowCredentials(true) is important, otherwise:
