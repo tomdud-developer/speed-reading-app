@@ -8,7 +8,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 
 spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
-jpa.hibernate.ddl-auto=update
+jpa.hibernate.ddl-auto=auto
 jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 jpa.properties.hibernate.format_sql=true
 jpa.show-sql=true
