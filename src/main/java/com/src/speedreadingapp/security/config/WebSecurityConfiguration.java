@@ -1,12 +1,20 @@
 package com.src.speedreadingapp.security.config;
 
 
+import com.src.speedreadingapp.jpa.appuser.AppUserService;
+import com.src.speedreadingapp.security.config.filters.CustomAuthenticationFilter;
+import com.src.speedreadingapp.security.config.filters.CustomAuthorizationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,18 +24,23 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-
+    private final AppUserService appUserService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors();
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), appUserService));
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/login", "/api/v1/user/test2", "/api/v1/files/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/registration").permitAll();
+        http.authorizeRequests().antMatchers("/api/login","/api/v1/registration", "/api/v1/user/test2").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
         //http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
+        http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
 
     }
 
@@ -37,11 +50,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(List.of( "http://localhost:3000", "https://speed-reading-app-frontend.herokuapp.com"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
-        // setAllowCredentials(true) is important, otherwise:
-        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
-        //configuration.setAllowCredentials(true);
-        // setAllowedHeaders is important! Without it, OPTIONS preflight request
-        // will fail with 403 Invalid CORS request
         configuration.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Request-Method", "Authorization", "Cache-Control", "Content-Type", "*"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -49,7 +57,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
+    }
 
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder.bCryptPasswordEncoder());
+        provider.setUserDetailsService(appUserService);
+        return provider;
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
 
 }
