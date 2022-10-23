@@ -45,7 +45,9 @@ public class RegistrationService {
                         request.getPassword(),
                         false,
                         false,
-                        new HashSet<>()
+                        new HashSet<>(),
+                        new HashSet<>(),
+                        null
                 )
         );
 

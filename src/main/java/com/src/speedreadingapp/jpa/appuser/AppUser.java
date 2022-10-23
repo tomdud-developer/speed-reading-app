@@ -2,6 +2,7 @@ package com.src.speedreadingapp.jpa.appuser;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.src.speedreadingapp.jpa.pdfuser.PdfUser;
 import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,6 +56,9 @@ public class AppUser implements UserDetails {
     @OneToMany
     @JsonManagedReference
     private Set<SpeedMeterLog> speedMeterLogs;
+
+    @OneToOne
+    private PdfUser pdfUser;
 
 
 

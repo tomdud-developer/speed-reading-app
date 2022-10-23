@@ -37,8 +37,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), appUserService));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.authorizeRequests().antMatchers("/api/login","/api/v1/registration", "/api/v1/user/test2").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/pdfuser/save/*").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/pdfuser/get/*").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/pdfuser/get-text/*").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
+        http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get-latest/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         //http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
         http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
 
