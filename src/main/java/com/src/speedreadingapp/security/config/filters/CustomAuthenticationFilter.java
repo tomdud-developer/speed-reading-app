@@ -70,6 +70,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         AppUser appUser = appUserService.findByUsername(user.getUsername());
         tokens.put("firstname", appUser.getFirstname());
         tokens.put("lastname", appUser.getLastname());
+        tokens.put("email", appUser.getEmail());
         tokens.put("appuserid", String.valueOf(appUser.getId()));
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
