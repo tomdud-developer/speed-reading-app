@@ -37,5 +37,7 @@ public class PdfUserController {
     String getText(@PathVariable("userId") Long userId, @PathVariable("nWords") Integer nWords) {
         return pdfUserService.getNwords(userId, nWords);
     }
+    
+    
 
 }

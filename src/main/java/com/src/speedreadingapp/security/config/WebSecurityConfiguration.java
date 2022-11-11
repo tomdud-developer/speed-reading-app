@@ -43,6 +43,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/save/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get/*").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/esp-storage/save").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/esp-storage/get/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get-text/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get-latest/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");

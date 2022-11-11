@@ -75,7 +75,7 @@ public class PdfUser {
                                 newPdf.addPage(page);
                         }
                         parsedText = pdfTextStripper.getText(newPdf);
-                        parsedText =  (parsedText.replaceAll("[^A-Za-z0-9. ]+", " "));
+                        parsedText =  (parsedText.replaceAll("[^A-Za-z0-9łąńśćęóżźŁĄŃŚĆĘÓŻŹ., ]+", " "));
                 } catch (Exception e) {
                         e.printStackTrace();
                         try {
