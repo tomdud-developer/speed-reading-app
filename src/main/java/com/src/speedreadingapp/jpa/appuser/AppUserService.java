@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Service @Slf4j @RequiredArgsConstructor
+@Service
+@Slf4j
+@RequiredArgsConstructor
 public class AppUserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND = "user %s not found";
@@ -45,14 +47,15 @@ public class AppUserService implements UserDetailsService {
 
     public String signUpUser(AppUser appUser) {
         boolean isUserExist = appUserRepository.findByEmail(appUser.getEmail()).isPresent();
-
+        log.info("Checking email..." + appUser.getEmail());
         if(isUserExist) {
             throw new IllegalStateException("Email is registered!");
         }
         String encodedPassword = bCryptPasswordEncoder.encode(appUser.getPassword());
         appUser.setPassword(encodedPassword);
         appUserRepository.save(appUser);
-        //log.info("Saving new user to the database.");
+        log.info("Saved user to the database. username = " + appUser.getUsername());
+
         String token = UUID.randomUUID().toString();
         ConfirmationToken confiramtionToken = new ConfirmationToken(
             token,

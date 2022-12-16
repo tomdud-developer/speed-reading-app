@@ -75,9 +75,18 @@ public class PdfUser {
                                 newPdf.addPage(page);
                         }
                         parsedText = pdfTextStripper.getText(newPdf);
-                        parsedText =  (parsedText.replaceAll("[^A-Za-z0-9łąńśćęóżźŁĄŃŚĆĘÓŻŹ., ]+", " "));
+                        parsedText =  (parsedText.replaceAll("[^A-Za-z0-9łąńśćęóżźŁĄŃŚĆĘÓŻŹ.\",?!\\- ]+", " "));
                 } catch (Exception e) {
                         e.printStackTrace();
+                        try {
+                                if (cosDocument != null)
+                                        cosDocument.close();
+                                if (pdDocument != null)
+                                        pdDocument.close();
+                        } catch (Exception e1) {
+                                e1.printStackTrace();
+                        }
+                } finally {
                         try {
                                 if (cosDocument != null)
                                         cosDocument.close();

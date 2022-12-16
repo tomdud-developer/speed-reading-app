@@ -41,6 +41,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/login","/api/v1/registration", "/api/v1/user/test2").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/schultz-array-logs/*/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/save/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/esp-storage/save").permitAll();
@@ -56,7 +57,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://83.26.162.180:3000",  "https://speed-reading-app-frontend.herokuapp.com"));
+        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://localhost:8080",  "https://speed-reading-app-frontend.herokuapp.com", "speedreadingapp.loca.lt"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Request-Method", "Authorization", "Cache-Control", "Content-Type", "*"));

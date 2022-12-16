@@ -2,10 +2,12 @@ package com.src.speedreadingapp.registration;
 
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
+import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
 import com.src.speedreadingapp.registration.emailsender.EmailBuilder;
 import com.src.speedreadingapp.registration.emailsender.EmailSender;
 import com.src.speedreadingapp.registration.token.ConfirmationToken;
 import com.src.speedreadingapp.registration.token.ConfirmationTokenService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 
 @Service
+@Slf4j
 public class RegistrationService {
 
 
@@ -47,6 +50,7 @@ public class RegistrationService {
                         false,
                         new HashSet<>(),
                         new HashSet<>(),
+                        null,
                         null
                 )
         );
@@ -78,6 +82,9 @@ public class RegistrationService {
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser(
                 confirmationToken.getAppUser().getEmail());
+
+        log.info("Provide primary perviligies for user");
+        appUserService.addRoleToUser(confirmationToken.getAppUser().getUsername(), "ROLE_USER");
         return "confirmed";
     }
 
