@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component("userEndpointSecurity")
 public class UserEndpointSecurity {
-
         private final AppUserService appUserService;
         public boolean hasUserId(Authentication authentication, Long userId) {
             String principalName = (String) authentication.getPrincipal();

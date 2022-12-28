@@ -1,7 +1,9 @@
 package com.src.speedreadingapp.jpa.appuser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.src.speedreadingapp.course.UserProgress;
 import com.src.speedreadingapp.jpa.pdfuser.PdfUser;
 import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
 import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
@@ -64,6 +66,9 @@ public class AppUser implements UserDetails {
     @OneToOne
     private SchultzArrayLog schultzArrayLog;
 
+
+    @OneToOne
+    private UserProgress userProgress;
 
 
 

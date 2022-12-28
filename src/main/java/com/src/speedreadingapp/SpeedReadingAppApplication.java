@@ -2,6 +2,7 @@ package com.src.speedreadingapp;
 
 import com.src.speedreadingapp.jpa.appuser.Role;
 import com.src.speedreadingapp.jpa.appuser.RoleRepository;
+import com.src.speedreadingapp.security.config.Secrets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 //exclude={DataSourceAutoConfiguration.class}
 @RequiredArgsConstructor
@@ -24,6 +26,13 @@ public class SpeedReadingAppApplication {
 	}
 
 
+
+	@Bean
+	protected void databaseConnectionProporties() {
+		Properties properties = System.getProperties();
+
+		properties.put("spring.datasource.password", Secrets.DATABASE_PASS);
+	}
 	@Bean
 	protected void createRoles() {
 		ArrayList<Role> roles = new ArrayList<>();
@@ -31,8 +40,8 @@ public class SpeedReadingAppApplication {
 		roles.forEach((r) -> {
 			if(roleRepository.findById(r.getId()).isEmpty())
 				roleRepository.save(r);
-		});
-
+			}
+		);
 	}
 
 }

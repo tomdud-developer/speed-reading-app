@@ -1,5 +1,8 @@
 package com.src.speedreadingapp.registration;
 
+import com.src.speedreadingapp.course.ExerciseService;
+import com.src.speedreadingapp.course.UserProgress;
+import com.src.speedreadingapp.course.UserProgressService;
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
 import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
@@ -24,13 +27,15 @@ public class RegistrationService {
     private final AppUserService appUserService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
+    private final UserProgressService userProgressService;
 
     @Autowired
-    public RegistrationService(EmailValidator emailValidator, AppUserService appUserService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender) {
+    public RegistrationService(EmailValidator emailValidator, AppUserService appUserService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender, UserProgressService userProgressService) {
         this.emailValidator = emailValidator;
         this.appUserService = appUserService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSender = emailSender;
+        this.userProgressService = userProgressService;
     }
 
     public String register(RegistrationRequest request) {
@@ -50,6 +55,7 @@ public class RegistrationService {
                         false,
                         new HashSet<>(),
                         new HashSet<>(),
+                        null,
                         null,
                         null
                 )
@@ -79,9 +85,13 @@ public class RegistrationService {
             throw new IllegalStateException("token expired");
         }
 
+        AppUser appUser = confirmationToken.getAppUser();
         confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
+        appUserService.enableAppUser(appUser.getEmail());
+
+        log.info("Create progress Entity for user");
+        UserProgress userProgress = userProgressService.createNewAndSaveUserProgress(appUser);
+        appUser.setUserProgress(userProgress);
 
         log.info("Provide primary perviligies for user");
         appUserService.addRoleToUser(confirmationToken.getAppUser().getUsername(), "ROLE_USER");

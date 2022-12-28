@@ -37,11 +37,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), appUserService));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeRequests().antMatchers("/api/login","/api/v1/registration", "/api/v1/user/test2").permitAll();
+        http.authorizeRequests().antMatchers(
+                "/api/login","/api/v1/registration", "/api/v1/user/test2", "/api/v1/session/**", "/api/v1/user-progress/**").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/schultz-array-logs/*/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
+        http.authorizeRequests()
+                .antMatchers("/api/v1/schultz-array-logs/*/{userId}")
+                .access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/save/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/esp-storage/save").permitAll();
@@ -51,13 +53,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get-latest/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         //http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
         http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
-
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://localhost:8080",  "https://speed-reading-app-frontend.herokuapp.com", "speedreadingapp.loca.lt"));
+        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://192.168.1.10:3000",  "https://speed-reading-app-frontend.herokuapp.com", "speedreadingapp.loca.lt", "http://speedreadingapplication.loclx.io", "http://speedreadingapplication.pl"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Request-Method", "Authorization", "Cache-Control", "Content-Type", "*"));
