@@ -31,6 +31,7 @@ public class Exercise {
     private Long id;
     private String name;
     private Integer sessionNumber;
+    private Integer indexInSession;
     private int param1;
     private int param2;
 }

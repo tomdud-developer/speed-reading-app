@@ -10,17 +10,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
-
+    final int y = 3;
     @Bean
     protected void createExercises(){
-        exerciseRepository.save(new Exercise(1L, "test11", 1, 1, 0));
-        exerciseRepository.save(new Exercise(2L, "test12", 1, 1, 0));
-        exerciseRepository.save(new Exercise(3L, "test13", 1, 1, 0));
-        exerciseRepository.save(new Exercise(4L, "test14", 1, 1, 0));
-        exerciseRepository.save(new Exercise(5L, "test21", 2, 1, 0));
-        exerciseRepository.save(new Exercise(6L, "test22", 2, 1, 0));
-        exerciseRepository.save(new Exercise(7L, "test23", 2, 1, 0));
-        exerciseRepository.save(new Exercise(8L, "test24", 2, 1, 0));
+        createSession1();
+        createSession2();
+        createSession3();
+    }
+
+    private void createSession1() {
+        int x = 1;
+        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Prędkość czytania", x, 1, 0, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 2L, "Znikające liczby", x, 2, 1, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 3L, "Tablice Schultza", x, 3, 3, 3));
+    }
+
+    private void createSession2() {
+        int x = 2;
+        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Kolumny Liczb", x, 1, 1, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 2L, "Znikające liczby", x, 2, 2, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 3L, "Szybkie słowa", x, 3, 400, 1));
+    }
+
+    private void createSession3() {
+        int x = 3;
+        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Zrozumienie tekstu", x, 1, 0, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 2L, "Znikające liczby", x, 2, 2, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 3L, "Szybkie słowa", x, 3, 400, 1));
     }
 
     List<Exercise> getExercisesWhereSessionNumberEqualsX(Integer x) {

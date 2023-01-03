@@ -4,6 +4,7 @@ import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -37,5 +38,40 @@ public class UserProgressService {
             appUser = optionalAppUser.get();
 
         return appUser.getUserProgress();
+    }
+
+    @Transactional
+    public Integer confirmExercise(Long userId, Integer exerciseNumber) throws Exception{
+        AppUser appUser;
+        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        if(optionalAppUser.isEmpty())
+            throw new Exception("User with this id doesn't exist!");
+        else
+            appUser = optionalAppUser.get();
+        appUser.getUserProgress().setFinishedExercise(exerciseNumber);
+        return exerciseNumber;
+    }
+
+    @Transactional
+    public Integer confirmSession(Long userId, Integer sessionNumber) throws Exception {
+        AppUser appUser;
+        UserProgress userProgress;
+        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        if(optionalAppUser.isEmpty())
+            throw new Exception("User with this id doesn't exist!");
+        else
+            userProgress = optionalAppUser.get().getUserProgress();
+        Integer currentSession = userProgress.getCurrentSessionNumber();
+        Integer nextSession = currentSession + 1;
+
+        if(sessionNumber + 1 != nextSession)
+            throw new Exception("Mismatch beetwen currentSession and nextSession value");
+        else {
+            userProgress.setCurrentSessionNumber(nextSession);
+            userProgress.setFinishedExercise(0);
+        }
+
+
+        return nextSession;
     }
 }

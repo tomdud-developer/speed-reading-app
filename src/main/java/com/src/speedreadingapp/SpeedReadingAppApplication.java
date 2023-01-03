@@ -2,6 +2,8 @@ package com.src.speedreadingapp;
 
 import com.src.speedreadingapp.jpa.appuser.Role;
 import com.src.speedreadingapp.jpa.appuser.RoleRepository;
+import com.src.speedreadingapp.jpa.understandingmeter.UnderstandingLevelLogService;
+import com.src.speedreadingapp.jpa.understandingmeter.textquestions.UnderstandingLevelTextAndQuestionService;
 import com.src.speedreadingapp.security.config.Secrets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +22,7 @@ import java.util.Properties;
 public class SpeedReadingAppApplication {
 
 	private final RoleRepository roleRepository;
+	private final UnderstandingLevelTextAndQuestionService understandingLevelTextAndQuestionService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpeedReadingAppApplication.class, args);
@@ -42,6 +45,8 @@ public class SpeedReadingAppApplication {
 				roleRepository.save(r);
 			}
 		);
+
+		understandingLevelTextAndQuestionService.createTextAnswerQuestion1();
 	}
 
 }

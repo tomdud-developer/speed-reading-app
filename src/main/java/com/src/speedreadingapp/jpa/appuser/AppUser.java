@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.src.speedreadingapp.course.UserProgress;
+import com.src.speedreadingapp.jpa.columnnumberexerciselogs.ColumnNumberExerciseLog;
+import com.src.speedreadingapp.jpa.numbersdisappearexerciselog.NumbersDisappearExerciseLog;
 import com.src.speedreadingapp.jpa.pdfuser.PdfUser;
 import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
 import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
+import com.src.speedreadingapp.jpa.understandingmeter.UnderstandingLevelLog;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -66,11 +69,17 @@ public class AppUser implements UserDetails {
     @OneToOne
     private SchultzArrayLog schultzArrayLog;
 
+    @OneToOne
+    private ColumnNumberExerciseLog columnNumberExerciseLog;
+
+    @OneToOne
+    private NumbersDisappearExerciseLog numbersDisappearExerciseLog;
 
     @OneToOne
     private UserProgress userProgress;
 
-
+    @OneToOne
+    private UnderstandingLevelLog understandingLevelLog;
 
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @Override

@@ -57,6 +57,9 @@ public class RegistrationService {
                         new HashSet<>(),
                         null,
                         null,
+                        null,
+                        null,
+                        null,
                         null
                 )
         );

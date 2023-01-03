@@ -27,7 +27,6 @@ public class SchultzArrayService {
         if(user.getSchultzArrayLog() == null) {
             schultzArrayLog = schultzArrayLogRepository.save(l);
             user.setSchultzArrayLog(l);
-
         } else {
             schultzArrayLog = user.getSchultzArrayLog();
             schultzArrayLog.setArray(l.getArray());

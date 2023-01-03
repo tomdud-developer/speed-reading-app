@@ -38,7 +38,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(
-                "/api/login","/api/v1/registration", "/api/v1/user/test2", "/api/v1/session/**", "/api/v1/user-progress/**").permitAll();
+                "/api/login","/api/v1/registration", "/api/v1/user/test2", "/api/v1/session/**", "/api/v1/user-progress/**", "/api/v1/understanding-meter/**", "/api/v1/column-numbers-logs/**", "/api/v1/numbers-disappear-logs/**").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
         http.authorizeRequests()
