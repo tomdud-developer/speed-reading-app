@@ -1,9 +1,8 @@
 package com.src.speedreadingapp.jpa.appuser;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.src.speedreadingapp.course.UserProgress;
+import com.src.speedreadingapp.jpa.course.UserProgress;
 import com.src.speedreadingapp.jpa.columnnumberexerciselogs.ColumnNumberExerciseLog;
 import com.src.speedreadingapp.jpa.numbersdisappearexerciselog.NumbersDisappearExerciseLog;
 import com.src.speedreadingapp.jpa.pdfuser.PdfUser;

@@ -1,9 +1,7 @@
 package com.src.speedreadingapp.jpa.understandingmeter;
 
-import com.src.speedreadingapp.course.UserProgress;
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
-import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

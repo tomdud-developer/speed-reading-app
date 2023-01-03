@@ -1,4 +1,4 @@
-package com.src.speedreadingapp.course;
+package com.src.speedreadingapp.jpa.course;
 
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
@@ -73,5 +73,19 @@ public class UserProgressService {
 
 
         return nextSession;
+    }
+
+    @Transactional
+    public void resetProgress(Long userId) throws Exception {
+        AppUser appUser;
+        UserProgress userProgress;
+        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        if(optionalAppUser.isEmpty())
+            throw new Exception("User with this id doesn't exist!");
+        else
+            userProgress = optionalAppUser.get().getUserProgress();
+
+        userProgress.setCurrentSessionNumber(1);
+        userProgress.setFinishedExercise(0);
     }
 }

@@ -1,4 +1,4 @@
-package com.src.speedreadingapp.course;
+package com.src.speedreadingapp.jpa.course;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.src.speedreadingapp.jpa.appuser.AppUser;

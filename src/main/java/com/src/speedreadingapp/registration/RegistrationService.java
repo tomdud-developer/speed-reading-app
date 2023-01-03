@@ -1,11 +1,9 @@
 package com.src.speedreadingapp.registration;
 
-import com.src.speedreadingapp.course.ExerciseService;
-import com.src.speedreadingapp.course.UserProgress;
-import com.src.speedreadingapp.course.UserProgressService;
+import com.src.speedreadingapp.jpa.course.UserProgress;
+import com.src.speedreadingapp.jpa.course.UserProgressService;
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
-import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
 import com.src.speedreadingapp.registration.emailsender.EmailBuilder;
 import com.src.speedreadingapp.registration.emailsender.EmailSender;
 import com.src.speedreadingapp.registration.token.ConfirmationToken;

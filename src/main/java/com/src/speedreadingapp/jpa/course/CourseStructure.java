@@ -1,9 +1,6 @@
-package com.src.speedreadingapp.course;
+package com.src.speedreadingapp.jpa.course;
 
-import com.src.speedreadingapp.jpa.appuser.Role;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.src.speedreadingapp.course;
+package com.src.speedreadingapp.jpa.course;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

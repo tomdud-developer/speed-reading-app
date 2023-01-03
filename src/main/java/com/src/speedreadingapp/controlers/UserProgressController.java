@@ -1,7 +1,7 @@
 package com.src.speedreadingapp.controlers;
 
-import com.src.speedreadingapp.course.UserProgress;
-import com.src.speedreadingapp.course.UserProgressService;
+import com.src.speedreadingapp.jpa.course.UserProgress;
+import com.src.speedreadingapp.jpa.course.UserProgressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +46,23 @@ public class UserProgressController {
         }
 
     }
+
+    @PostMapping(value = "/reset-progress/{userId}")
+    public ResponseEntity<String> resetProgress(@PathVariable Long userId) {
+        try {
+            userProgressService.resetProgress(userId);
+            return new ResponseEntity<>(
+                    "Progress reset completed.",
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    "There is a problem with reset progress",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
 
 
 

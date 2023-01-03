@@ -1,4 +1,4 @@
-package com.src.speedreadingapp.course;
+package com.src.speedreadingapp.jpa.course;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ public class ExerciseService {
 
     private void createSession1() {
         int x = 1;
-        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Prędkość czytania", x, 1, 0, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Piramida liczbowa", x, 1, 0, 0));
         exerciseRepository.save(new Exercise((x-1) * y + 2L, "Znikające liczby", x, 2, 1, 0));
         exerciseRepository.save(new Exercise((x-1) * y + 3L, "Tablice Schultza", x, 3, 3, 3));
     }
