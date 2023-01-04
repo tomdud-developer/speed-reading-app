@@ -58,7 +58,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://192.168.1.10:3000",  "https://speed-reading-app-frontend.herokuapp.com", "speedreadingapp.loca.lt", "http://speedreadingapplication.loclx.io", "http://speedreadingapplication.pl"));
+        configuration.setAllowedOrigins(List.of( "http://localhost:3000", "http://192.168.1.10:3000",  "https://speed-reading-app-frontend.herokuapp.com", "speedreadingapp.loca.lt", "http://speedreadingapplication.eu.loclx.io", "http://speedreadingapplication.pl"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Request-Method", "Authorization", "Cache-Control", "Content-Type", "*"));

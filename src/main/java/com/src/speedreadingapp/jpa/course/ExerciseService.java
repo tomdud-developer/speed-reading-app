@@ -27,7 +27,7 @@ public class ExerciseService {
 
     private void createSession2() {
         int x = 2;
-        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Kolumny Liczb", x, 1, 1, 0));
+        exerciseRepository.save(new Exercise((x-1) * y + 1L, "Kolumny liczb", x, 1, 1, 0));
         exerciseRepository.save(new Exercise((x-1) * y + 2L, "Znikające liczby", x, 2, 2, 0));
         exerciseRepository.save(new Exercise((x-1) * y + 3L, "Szybkie słowa", x, 3, 400, 1));
     }
