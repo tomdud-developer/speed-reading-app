@@ -12,7 +12,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity(name = "understandinglevelquestion")
+@Entity(name = "understanding_level_question")
 @Getter
 @Setter
 @AllArgsConstructor

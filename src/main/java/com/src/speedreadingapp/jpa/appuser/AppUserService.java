@@ -22,6 +22,7 @@ public class AppUserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND = "user %s not found";
 
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final RoleRepository roleRepository;
@@ -30,13 +31,9 @@ public class AppUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = appUserRepository.findByUsername(username);
-                //.orElseThrow(() ->
-                   //     new UsernameNotFoundException(String.format(USER_NOT_FOUND, username)));
         if(user == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
+            throw new UsernameNotFoundException("User" + username + "not found in the database");
         } else {
-            log.info("User found in the database: {}", username);
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             user.getRoles().forEach(role -> {
                 authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -44,28 +41,23 @@ public class AppUserService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
     }
-
     public String signUpUser(AppUser appUser) {
         boolean isUserExist = appUserRepository.findByEmail(appUser.getEmail()).isPresent();
-        log.info("Checking email..." + appUser.getEmail());
         if(isUserExist) {
-            throw new IllegalStateException("Email is registered!");
+            throw new IllegalStateException("Email " + appUser.getEmail() + " is registered!");
         }
         String encodedPassword = bCryptPasswordEncoder.encode(appUser.getPassword());
         appUser.setPassword(encodedPassword);
         appUserRepository.save(appUser);
-        log.info("Saved user to the database. username = " + appUser.getUsername());
 
         String token = UUID.randomUUID().toString();
         ConfirmationToken confiramtionToken = new ConfirmationToken(
-            token,
+                token,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(10),
                 appUser
         );
-
         confirmationTokenService.saveConfirmationToken(confiramtionToken);
-
         return token;
     }
 
