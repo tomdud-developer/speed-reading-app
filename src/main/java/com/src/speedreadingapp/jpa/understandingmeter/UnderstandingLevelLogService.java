@@ -17,7 +17,7 @@ public class UnderstandingLevelLogService {
     @Transactional
     public UnderstandingLevelLog saveLog(Long userId, UnderstandingLevelLog understandingLevelLog) {
         UnderstandingLevelLog log = understandingLevelLogRepostitory.save(understandingLevelLog);
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         optionalAppUser.ifPresentOrElse(
                 (value) -> {
                     value.setUnderstandingLevelLog(log);
@@ -32,7 +32,7 @@ public class UnderstandingLevelLogService {
     public UnderstandingLevelLog getLog(Long userId) throws Exception {
         AppUser appUser;
         UnderstandingLevelLog understandingLevelLog;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User with this id doesn't exist!");
         else

@@ -4,15 +4,10 @@ import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
 import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayLog;
 import com.src.speedreadingapp.jpa.schultzarraylogs.SchultzArrayService;
-import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
-import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/schultz-array-logs")
@@ -26,7 +21,7 @@ public class SchultzArrayLogsController {
     @PutMapping(value = "/save/{userId}")
     @CrossOrigin
     protected SchultzArrayLog putLogs(@RequestBody SchultzArrayLog schultzArrayLog, @PathVariable("userId") Long userId) throws Exception {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent())
             return schultzArrayLogsService.putSchultzArrayLog(schultzArrayLog, optionalAppUser.get());
         else
@@ -36,7 +31,7 @@ public class SchultzArrayLogsController {
     @GetMapping(value = "/get/{userId}")
     @CrossOrigin
     protected SchultzArrayLog getLogs(@PathVariable("userId") Long userId) throws Exception {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent()) {
             SchultzArrayLog arrayLog = optionalAppUser.get().getSchultzArrayLog();
             if(arrayLog == null) {

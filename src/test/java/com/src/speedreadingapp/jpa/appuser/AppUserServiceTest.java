@@ -1,22 +1,18 @@
 package com.src.speedreadingapp.jpa.appuser;
 
 import com.src.speedreadingapp.SpeedReadingAppApplication;
+import com.src.speedreadingapp.registration.RegistrationController;
 import com.src.speedreadingapp.registration.token.ConfirmationToken;
 import com.src.speedreadingapp.registration.token.ConfirmationTokenRepository;
-import com.src.speedreadingapp.registration.token.ConfirmationTokenService;
 import com.src.speedreadingapp.security.config.PasswordEncoder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,14 +21,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -62,6 +57,9 @@ public class AppUserServiceTest {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    RegistrationController registrationController;
 
 
 
@@ -200,9 +198,9 @@ public class AppUserServiceTest {
 
     @Test
     void findByUsername() {
+        appUserService.signUpUser(testAppUser);
+        AppUser appUser = appUserRepository.findByUsername(testAppUser.getUsername());
+        assertEquals(testAppUser.getEmail(), appUser.getEmail());
     }
 
-    @Test
-    void finById() {
-    }
 }

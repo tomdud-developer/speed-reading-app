@@ -31,7 +31,7 @@ public class UserProgressService {
 
     public UserProgress getUserProgressByUserId(Long userId) throws Exception{
         AppUser appUser;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User with this id doesn't exist!");
         else
@@ -43,7 +43,7 @@ public class UserProgressService {
     @Transactional
     public Integer confirmExercise(Long userId, Integer exerciseNumber) throws Exception{
         AppUser appUser;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User with this id doesn't exist!");
         else
@@ -56,7 +56,7 @@ public class UserProgressService {
     public Integer confirmSession(Long userId, Integer sessionNumber) throws Exception {
         AppUser appUser;
         UserProgress userProgress;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User with this id doesn't exist!");
         else
@@ -79,7 +79,7 @@ public class UserProgressService {
     public void resetProgress(Long userId) throws Exception {
         AppUser appUser;
         UserProgress userProgress;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User with this id doesn't exist!");
         else

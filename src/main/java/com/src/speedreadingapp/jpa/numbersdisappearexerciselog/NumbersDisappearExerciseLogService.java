@@ -3,8 +3,6 @@ package com.src.speedreadingapp.jpa.numbersdisappearexerciselog;
 
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
-import com.src.speedreadingapp.jpa.columnnumberexerciselogs.ColumnNumberExerciseLog;
-import com.src.speedreadingapp.jpa.columnnumberexerciselogs.ColumnNumberExerciseLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +17,7 @@ public class NumbersDisappearExerciseLogService {
 
     @Transactional
     public NumbersDisappearExerciseLog save(NumbersDisappearExerciseLog log, Long userId) throws Exception {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User " + userId + "doesn't exist");
         AppUser appUser = optionalAppUser.get();
@@ -38,7 +36,7 @@ public class NumbersDisappearExerciseLogService {
 
     @Transactional
     public NumbersDisappearExerciseLog get(Long userId) throws Exception {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
             throw new Exception("User " + userId + "doesn't exist");
         AppUser appUser = optionalAppUser.get();

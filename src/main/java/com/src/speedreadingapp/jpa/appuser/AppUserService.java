@@ -95,7 +95,7 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findByUsername(username);
     }
 
-    public Optional<AppUser> finById(Long id) {
+    public Optional<AppUser> findById(Long id) {
         return appUserRepository.findById(id);
     }
 }

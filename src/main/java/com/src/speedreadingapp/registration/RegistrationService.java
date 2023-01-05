@@ -72,7 +72,7 @@ public class RegistrationService {
 
 
     @Transactional
-    public String confirmToken(String token) {
+    public String confirmToken(String token) throws IllegalStateException{
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
                 .orElseThrow(() ->
@@ -91,7 +91,6 @@ public class RegistrationService {
         AppUser appUser = confirmationToken.getAppUser();
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser(appUser.getEmail());
-
         log.info("Create progress Entity for user");
         UserProgress userProgress = userProgressService.createNewAndSaveUserProgress(appUser);
         appUser.setUserProgress(userProgress);
@@ -101,8 +100,5 @@ public class RegistrationService {
         return "confirmed";
     }
 
-    public int enableAppUser(String email) {
-        return appUserService.enableAppUser(email);
-    }
 
 }

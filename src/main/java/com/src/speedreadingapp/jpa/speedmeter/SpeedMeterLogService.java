@@ -18,7 +18,7 @@ public class SpeedMeterLogService {
     @Transactional
     public SpeedMeterLog saveSpeedMeterLog(SpeedMeterLog log) {
         SpeedMeterLog speedMeterLog = speedMeterLogRepository.save(log);
-        Optional<AppUser> optionalAppUser = appUserService.finById(log.getAppUser().getId());
+        Optional<AppUser> optionalAppUser = appUserService.findById(log.getAppUser().getId());
         optionalAppUser.ifPresentOrElse(
                 (value) -> {
                     value.getSpeedMeterLogs().add(speedMeterLog);

@@ -22,7 +22,7 @@ public class PdfUserService {
         pdfUser.setName(multipartPdf.getOriginalFilename());
         pdfUser.setContent(PdfUser.pdfToString(multipartPdf.getBytes(), pageFrom, pageTo));
         PdfUser savedPdf = pdfUserRepository.save(pdfUser);
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent()) {
             optionalAppUser.get().setPdfUser(savedPdf);
             return
@@ -33,7 +33,7 @@ public class PdfUserService {
     }
 
     public String getNwords(Long userId, Integer nWords) {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent()) {
             return optionalAppUser.get().getPdfUser().getNwords(nWords);
         }
@@ -42,7 +42,7 @@ public class PdfUserService {
     }
 
     public PdfUser download(Long userId) {
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent()) {
             return optionalAppUser.get().getPdfUser();
         }

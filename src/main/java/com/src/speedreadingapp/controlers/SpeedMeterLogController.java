@@ -6,16 +6,10 @@ import com.src.speedreadingapp.jpa.appuser.AppUserService;
 import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLog;
 import com.src.speedreadingapp.jpa.speedmeter.SpeedMeterLogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/speed-meter-log")
@@ -34,7 +28,7 @@ public class SpeedMeterLogController {
     @CrossOrigin
     protected List<SpeedMeterLog> getLogs(@PathVariable("userId") Long userId) {
         Set<SpeedMeterLog> logs;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent())
             logs = optionalAppUser.get().getSpeedMeterLogs();
         else
@@ -50,7 +44,7 @@ public class SpeedMeterLogController {
     @CrossOrigin
     protected SpeedMeterLog getLatestLog(@PathVariable("userId") Long userId) {
         Set<SpeedMeterLog> logs;
-        Optional<AppUser> optionalAppUser = appUserService.finById(userId);
+        Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isPresent())
             logs = optionalAppUser.get().getSpeedMeterLogs();
         else

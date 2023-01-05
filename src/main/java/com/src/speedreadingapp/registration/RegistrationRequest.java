@@ -4,8 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 
-@EqualsAndHashCode
-@ToString
+
+
 public class RegistrationRequest {
     private String firstname;
     private String lastname;
