@@ -18,10 +18,10 @@ public class SpeedMeterLogController {
     private final SpeedMeterLogService speedMeterLogService;
     private final AppUserService appUserService;
 
-    @PostMapping(value = "/save")
+    @PostMapping(value = "/save/{userId}")
     @CrossOrigin
-    protected SpeedMeterLog saveLog(@RequestBody SpeedMeterLog speedMeterLog) {
-        return speedMeterLogService.saveSpeedMeterLog(speedMeterLog);
+    protected SpeedMeterLog saveLog(@RequestBody SpeedMeterLog speedMeterLog, @PathVariable Long userId) {
+        return speedMeterLogService.saveSpeedMeterLog(speedMeterLog, userId);
     }
 
     @GetMapping(value = "/get/{userId}")

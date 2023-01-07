@@ -58,7 +58,7 @@ public class AppUser implements UserDetails {
     @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
 
-    @OneToMany
+    @OneToMany(fetch = EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<SpeedMeterLog> speedMeterLogs;
 

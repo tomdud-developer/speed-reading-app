@@ -38,22 +38,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(
-                "/api/login","/api/v1/registration", "/api/v1/user/test2", "/api/v1/session/**", "/api/v1/user-progress/**", "/api/v1/understanding-meter/**").permitAll();
+                "/api/login","/api/v1/registration", "/api/v1/user/test2", "/api/v1/session/**", "/api/v1/understanding-meter/text/*", "/api/v1/understanding-meter/questions/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/registration/confirm").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/save").permitAll();
         http.authorizeRequests()
                 .antMatchers("/api/v1/schultz-array-logs/*/{userId}")
                 .access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/save/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get/*").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/esp-storage/save").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/esp-storage/get/*").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/pdfuser/get-text/*").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/speed-meter-log/get/{userId}").access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         http.authorizeRequests().antMatchers(
-                "/api/v1/speed-meter-log/get-latest/{userId}",
                             "/api/v1/column-numbers-logs/*/{userId}",
-                            "/api/v1/numbers-disappear-logs/*/{userId}"
+                            "/api/v1/numbers-disappear-logs/*/{userId}",
+                            "/api/v1/speed-meter-log/*/{userId}",
+                            "/api/v1/understanding-meter/*/{userId}",
+                            "/api/v1/user-progress/*/{userId}&*",
+                            "/api/v1/user-progress/*/{userId}"
                         ).access("@userEndpointSecurity.hasUserId(authentication,#userId)");
         //http.authorizeRequests().anyRequest().authenticated();//and().formLogin();
         http.authorizeRequests().anyRequest().authenticated();//and().formLogin();

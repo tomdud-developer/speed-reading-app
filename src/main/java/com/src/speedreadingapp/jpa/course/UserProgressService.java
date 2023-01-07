@@ -15,6 +15,7 @@ public class UserProgressService {
     private final UserProgressRepository userProgressRepository;
     private final AppUserService appUserService;
 
+    @Transactional
     public UserProgress createNewAndSaveUserProgress(AppUser appUser) {
         UserProgress userProgress = new UserProgress(
                 null,
