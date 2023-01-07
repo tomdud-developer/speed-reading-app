@@ -3,6 +3,7 @@ HELP.md
 application.yml
 application.proporties
 gradle.properties
+src/main/java/com/src/speedreadingapp/security/config/Secrets.java
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

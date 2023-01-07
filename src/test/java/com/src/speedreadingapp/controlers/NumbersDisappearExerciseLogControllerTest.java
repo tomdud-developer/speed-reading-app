@@ -10,6 +10,7 @@ import com.src.speedreadingapp.jpa.numbersdisappearexerciselog.NumbersDisappearE
 import com.src.speedreadingapp.registration.RegistrationRequest;
 import com.src.speedreadingapp.registration.RegistrationService;
 import com.src.speedreadingapp.registration.token.ConfirmationTokenRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -100,11 +101,7 @@ class NumbersDisappearExerciseLogControllerTest {
         }
     }
 
-
-
-
-
-    @BeforeEach
+    @AfterEach
     void tearDown() {
         appUserService.getUsers().forEach(user -> {
             user.setUserProgress(null);

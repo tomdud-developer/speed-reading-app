@@ -17,6 +17,7 @@ import com.src.speedreadingapp.security.config.filters.LoginRequestResponse;
 import org.apache.tomcat.util.json.JSONParser;
 import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -107,7 +108,7 @@ class ColumnNumberExerciseLogControllerTest {
 
 
 
-    @BeforeEach
+    @AfterEach
     void tearDown() {
         appUserService.getUsers().forEach(user -> {
             user.setUserProgress(null);

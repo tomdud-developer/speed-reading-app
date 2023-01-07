@@ -20,7 +20,7 @@ public class PdfUserController {
 
     private final PdfUserService pdfUserService;
 
-    @PutMapping(value = "/save/{userId}&{pageFrom}&{pageTo}")
+    @PostMapping(value = "/save/{userId}&{pageFrom}&{pageTo}")
     Long uploadPdf(@RequestParam MultipartFile multipartPdf
                         , @PathVariable("userId") Long userId
                             , @PathVariable("pageFrom") Integer pageFrom
