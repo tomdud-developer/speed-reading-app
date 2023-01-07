@@ -62,22 +62,22 @@ public class AppUser implements UserDetails {
     @JsonManagedReference
     private Set<SpeedMeterLog> speedMeterLogs;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private PdfUser pdfUser;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private SchultzArrayLog schultzArrayLog;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private ColumnNumberExerciseLog columnNumberExerciseLog;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private NumbersDisappearExerciseLog numbersDisappearExerciseLog;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private UserProgress userProgress;
 
-    @OneToOne
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     private UnderstandingLevelLog understandingLevelLog;
 
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)

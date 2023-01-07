@@ -4,6 +4,7 @@ package com.src.speedreadingapp.jpa.columnnumberexerciselogs;
 import com.src.speedreadingapp.jpa.appuser.AppUser;
 import com.src.speedreadingapp.jpa.appuser.AppUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,10 @@ public class ColumnNumberExerciseLogService {
     private final AppUserService appUserService;
 
     @Transactional
-    public ColumnNumberExerciseLog save(ColumnNumberExerciseLog log, Long userId) throws Exception {
+    public ColumnNumberExerciseLog save(ColumnNumberExerciseLog log, Long userId) throws UsernameNotFoundException {
         Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
-            throw new Exception("User " + userId + "doesn't exist");
+            throw new UsernameNotFoundException("User " + userId + "doesn't exist");
         AppUser appUser = optionalAppUser.get();
 
         ColumnNumberExerciseLog columnNumberExerciseLog;
@@ -36,10 +37,10 @@ public class ColumnNumberExerciseLogService {
     }
 
     @Transactional
-    public ColumnNumberExerciseLog get(Long userId) throws Exception {
+    public ColumnNumberExerciseLog get(Long userId) throws UsernameNotFoundException {
         Optional<AppUser> optionalAppUser = appUserService.findById(userId);
         if(optionalAppUser.isEmpty())
-            throw new Exception("User " + userId + "doesn't exist");
+            throw new UsernameNotFoundException("User " + userId + "doesn't exist");
         AppUser appUser = optionalAppUser.get();
         return appUser.getColumnNumberExerciseLog();
     }

@@ -19,8 +19,6 @@ public class SchultzArrayService {
     private final SchultzArrayLogRepository schultzArrayLogRepository;
     private final AppUserService appUserService;
 
-
-
     @Transactional
     public SchultzArrayLog putSchultzArrayLog(SchultzArrayLog l, AppUser user) throws Exception {
         SchultzArrayLog schultzArrayLog;

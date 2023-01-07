@@ -68,8 +68,8 @@ class RegistrationServiceTest {
     @BeforeEach
     void setUp() {
         testAppUser = new AppUser();
-        testAppUser.setUsername("testUsername");
-        testAppUser.setEmail("test@test.gmail.com");
+        testAppUser.setUsername("testRegisterUsername");
+        testAppUser.setEmail("register@test.gmail.com");
         testAppUser.setFirstname("testFirstname");
         testAppUser.setLastname("testLastname");
         testAppUser.setPassword("testPassword");

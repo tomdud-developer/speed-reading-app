@@ -1,28 +1,23 @@
-package com.src.speedreadingapp.jpa.numbersdisappearexerciselog;
+package com.src.speedreadingapp.jpa.columnnumberexerciselogs;
 
 import com.src.speedreadingapp.SpeedReadingAppApplication;
 import com.src.speedreadingapp.jpa.appuser.*;
 import com.src.speedreadingapp.jpa.course.UserProgressRepository;
+import com.src.speedreadingapp.jpa.numbersdisappearexerciselog.NumbersDisappearExerciseLog;
 import com.src.speedreadingapp.registration.RegistrationService;
 import com.src.speedreadingapp.registration.token.ConfirmationTokenRepository;
-import org.hibernate.Session;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,10 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(
         locations = "classpath:application-integrationtest.properties")
 @ExtendWith(MockitoExtension.class)
-class NumbersDisappearExerciseLogServiceTest {
+class ColumnNumberExerciseLogServiceTest {
 
-    @Autowired
-    private JdbcTemplate jdbc;
 
     @Autowired
     AppUserService appUserService;
@@ -59,22 +52,22 @@ class NumbersDisappearExerciseLogServiceTest {
     UserProgressRepository userProgressRepository;
 
     @Autowired
-    NumbersDisappearExerciseLogService numbersDisappearExerciseLogService;
+    ColumnNumberExerciseLogService columnNumberExerciseLogService;
 
     @Autowired
-    NumbersDisappearExerciseLogRepository numbersDisappearExerciseLogRepository;
+    ColumnNumberExerciseLogRepository columnNumberExerciseLogRepository;
 
     AppUser testAppUser;
-    NumbersDisappearExerciseLog numbersDisappearExerciseLog;
+    ColumnNumberExerciseLog columnNumberExerciseLog;
 
     @BeforeEach
     void setUp() {
-        numbersDisappearExerciseLog = new NumbersDisappearExerciseLog();
-        numbersDisappearExerciseLog.setArray(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        columnNumberExerciseLog = new ColumnNumberExerciseLog();
+        columnNumberExerciseLog.setArray(new Integer[]{0,1,2,3,4,5});
 
         testAppUser = new AppUser();
-        testAppUser.setUsername("testUsername");
-        testAppUser.setEmail("test@test.gmail.com");
+        testAppUser.setUsername("testUsername2");
+        testAppUser.setEmail("test2@test.gmail.com");
         testAppUser.setFirstname("testFirstname");
         testAppUser.setLastname("testLastname");
         testAppUser.setPassword("testPassword");
@@ -100,19 +93,19 @@ class NumbersDisappearExerciseLogServiceTest {
         confirmationTokenRepository.deleteAll();
         appUserRepository.deleteAll();
         roleRepository.deleteAll();
-        numbersDisappearExerciseLogRepository.deleteAll();
+        columnNumberExerciseLogRepository.deleteAll();
         //Check isUserRepositoryEmpty
         assertTrue(confirmationTokenRepository.findAll().isEmpty());
         assertTrue(roleRepository.findAll().isEmpty());
         assertTrue(appUserRepository.findAll().isEmpty());
-        assertTrue(numbersDisappearExerciseLogRepository.findAll().isEmpty());
+        assertTrue(columnNumberExerciseLogRepository.findAll().isEmpty());
     }
 
     @Test
     void saveThrowsUserNotFoundExeption() {
         long idNotExist = testAppUser.getId() + 2312;
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
-            numbersDisappearExerciseLogService.save(numbersDisappearExerciseLog, idNotExist);
+            columnNumberExerciseLogService.save(columnNumberExerciseLog, idNotExist);
         });
 
         String expectedMessage = "User " + idNotExist + "doesn't exist";
@@ -122,17 +115,19 @@ class NumbersDisappearExerciseLogServiceTest {
     }
 
     @Test
-    void save() {
-        numbersDisappearExerciseLogService.save(numbersDisappearExerciseLog, testAppUser.getId());
-        NumbersDisappearExerciseLog supposedEntity = appUserService.getAppUser(testAppUser.getUsername()).getNumbersDisappearExerciseLog();
-        assertArrayEquals(supposedEntity.getArray(), numbersDisappearExerciseLog.getArray());
+    void save() throws UsernameNotFoundException{
+        ColumnNumberExerciseLog log = columnNumberExerciseLogService.save(columnNumberExerciseLog, testAppUser.getId());
+        assertNotNull(log);
+        ColumnNumberExerciseLog supposedEntity = appUserService.getAppUser(testAppUser.getUsername()).getColumnNumberExerciseLog();
+
+        assertArrayEquals(supposedEntity.getArray(), columnNumberExerciseLog.getArray());
     }
 
     @Test
     void getThrowsUserNotFoundExeption() {
         long idNotExist = testAppUser.getId() + 2312;
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
-            numbersDisappearExerciseLogService.get(idNotExist);
+            columnNumberExerciseLogService.get(idNotExist);
         });
 
         String expectedMessage = "User " + idNotExist + "doesn't exist";
@@ -143,13 +138,13 @@ class NumbersDisappearExerciseLogServiceTest {
 
     @Test
     @Transactional
-    void get() {
-        numbersDisappearExerciseLogService.save(numbersDisappearExerciseLog, testAppUser.getId());
-        NumbersDisappearExerciseLog supposedEntity = appUserService.getAppUser(testAppUser.getUsername()).getNumbersDisappearExerciseLog();
-        assertArrayEquals(supposedEntity.getArray(), numbersDisappearExerciseLog.getArray());
+    void get() throws UsernameNotFoundException{
+        columnNumberExerciseLogService.save(columnNumberExerciseLog, testAppUser.getId());
+        ColumnNumberExerciseLog supposedEntity = appUserService.getAppUser(testAppUser.getUsername()).getColumnNumberExerciseLog();
+        assertArrayEquals(supposedEntity.getArray(), columnNumberExerciseLog.getArray());
 
         long expectedEntityId = supposedEntity.getId();
-        NumbersDisappearExerciseLog log = numbersDisappearExerciseLogRepository.getReferenceById(expectedEntityId);
+        ColumnNumberExerciseLog log = columnNumberExerciseLogRepository.getReferenceById(expectedEntityId);
 
         assertNotNull(log);
         assertEquals(supposedEntity, log);

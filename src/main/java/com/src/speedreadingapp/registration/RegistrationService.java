@@ -90,7 +90,8 @@ public class RegistrationService {
 
         AppUser appUser = confirmationToken.getAppUser();
         confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(appUser.getEmail());
+        //appUserService.enableAppUser(appUser.getEmail());
+        appUser.setEnabled(true);
         log.info("Create progress Entity for user");
         UserProgress userProgress = userProgressService.createNewAndSaveUserProgress(appUser);
         appUser.setUserProgress(userProgress);
