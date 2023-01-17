@@ -28,11 +28,11 @@ public class EmailService implements EmailSender{
     @Override
     @Async
     public void send(String to, String email) {
-        String from = "***REMOVED***";
-        String host = "***REMOVED***";
+        String from = Secrets.SMPT_FROM;
+        String host = Secrets.SMPT_HOST;
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.port", Secrets.SMPT_PORT);
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.auth", "true");
         //properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");

@@ -41,7 +41,6 @@ public class RegistrationService {
         if(!isValidEmail) {
             throw new IllegalStateException("Email not valid");
         }
-
         String token = appUserService.signUpUser(
                 new AppUser(null,
                         request.getFirstname(),
@@ -61,12 +60,9 @@ public class RegistrationService {
                         null
                 )
         );
-
-
-
-        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
+        String link = "http://speedreadingapplicationbackend.eu.loclx.io/" +
+                        "api/v1/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), EmailBuilder.buildEmail(request.getFirstname(), link));
-
         return token;
     }
 

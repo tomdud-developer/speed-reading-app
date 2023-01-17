@@ -40,7 +40,7 @@ public class UnderstandingMeterLogController {
 
     @GetMapping(value = "/questions/{number}")
     @CrossOrigin
-    protected List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(@PathVariable Long number) {
+    protected List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(@PathVariable Integer number) {
         return understandingLevelTextAndQuestionService.getQuestionsToTextNumberX(number);
     }
 }

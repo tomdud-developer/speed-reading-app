@@ -16,12 +16,14 @@ public class UserEndpointSecurity {
             Long id = appUserService.findByUsername(principalName).getId();
             String appUserID = String.valueOf(id);
             String supposedPrincipalId = String.valueOf(userId);
-            boolean isAuthenticated = principalName != null && appUserID.equals(supposedPrincipalId);
+            boolean isAuthenticated =
+                    principalName != null && appUserID.equals(supposedPrincipalId);
             if(isAuthenticated)
-                log.info("Checking user endpoint. Security alert: userId=" + userId + " is user from token");
+                log.info("Checking user endpoint. " +
+                        "Security alert: userId=" + userId + " is user from token");
             else
-                log.info("Checking user endpoint. Security alert: userId=" + userId + " is not user from token");
-
+                log.info("Checking user endpoint. " +
+                        "Security alert: userId=" + userId + " is not user from token");
             return isAuthenticated;
         }
 }

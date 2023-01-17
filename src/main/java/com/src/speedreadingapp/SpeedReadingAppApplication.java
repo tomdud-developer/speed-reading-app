@@ -28,14 +28,6 @@ public class SpeedReadingAppApplication {
 		SpringApplication.run(SpeedReadingAppApplication.class, args);
 	}
 
-
-
-	@Bean
-	protected void databaseConnectionProporties() {
-		Properties properties = System.getProperties();
-
-		properties.put("spring.datasource.password", Secrets.DATABASE_PASS);
-	}
 	@Bean
 	protected void createRoles() {
 		ArrayList<Role> roles = new ArrayList<>();

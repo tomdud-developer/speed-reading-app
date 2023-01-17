@@ -19,20 +19,21 @@ public class UnderstandingLevelTextAndQuestionService {
 
     private final UnderstandingLevelQuestionRepository understandingLevelQuestionRepository;
     private final UnderstandingLevelTextRepository understandingLevelTextRepository;
-
+    private final QuestionsCreator questionsCreator;
     @Transactional
     public UnderstandingLevelText getTextNumberX(Long x) {
-        return understandingLevelTextRepository.getReferenceById(x);
+        return understandingLevelTextRepository.getTextByIndex(
+                Integer.parseInt(String.valueOf(x))
+        );
     }
 
     @Transactional
     public void createTextAnswerQuestion1() {
         try {
+            understandingLevelTextRepository.deleteAll();
+            understandingLevelQuestionRepository.deleteAll();
             UnderstandingLevelText understandingLevelText = understandingLevelTextRepository.save(new UnderstandingLevelText(1L, 1, createText1()));
-            UnderstandingLevelQuestion understandingLevelQuestion1 = createQuestion1(understandingLevelText);
-            UnderstandingLevelQuestion understandingLevelQuestion2 = createQuestion2(understandingLevelText);
-            UnderstandingLevelQuestion understandingLevelQuestion3 = createQuestion3(understandingLevelText);
-            UnderstandingLevelQuestion understandingLevelQuestion4 = createQuestion4(understandingLevelText);
+            questionsCreator.createAllQuestions(understandingLevelText);
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
@@ -56,78 +57,9 @@ public class UnderstandingLevelTextAndQuestionService {
         return str;
     }
 
-    @Transactional
-    protected UnderstandingLevelQuestion createQuestion1(UnderstandingLevelText understandingLevelText) {
-        UnderstandingLevelQuestion question = new UnderstandingLevelQuestion(
-                1L,
-                0,
-                "Gdzie należy postawić klatkę z ptakiem?",
-                "w pobliżu pieca",
-                "w słoneczne miejsce",
-                "w miejscu zacienionym i przysłoniętym",
-                "w miejscu bezpośrednio nasłonecznionym",
-                'C',
-                understandingLevelText
-        );
-        UnderstandingLevelQuestion savedQuestion = understandingLevelQuestionRepository.save(question);
-        return savedQuestion;
-    }
 
-    @Transactional
-    protected UnderstandingLevelQuestion createQuestion2(UnderstandingLevelText understandingLevelText) {
-        UnderstandingLevelQuestion question = new UnderstandingLevelQuestion(
-                2L,
-                1,
-                "Jakiego miejsca powinno się unikać, gdy postawimy klatkę z ptakiem?",
-                "miejsca zacienionego",
-                "przeciągów",
-                "miejsca słonecznego",
-                "powały",
-                'B',
-                understandingLevelText
-        );
 
-        UnderstandingLevelQuestion savedQuestion = understandingLevelQuestionRepository.save(question);
-        return savedQuestion;
-    }
-
-    @Transactional
-    protected UnderstandingLevelQuestion createQuestion3(UnderstandingLevelText understandingLevelText) {
-        UnderstandingLevelQuestion question = new UnderstandingLevelQuestion(
-                3L,
-                2,
-                "Jakie szkody może spowodować postawienie klatki w słonecznym miejscu?",
-                "ptak może zachorować",
-                "ptak może wyemigrować",
-                "ptak może zaziębić się i stracić życie",
-                "ptak może zostać porwany",
-                'C',
-                understandingLevelText
-        );
-
-        UnderstandingLevelQuestion savedQuestion = understandingLevelQuestionRepository.save(question);
-        return savedQuestion;
-    }
-
-    @Transactional
-    protected UnderstandingLevelQuestion createQuestion4(UnderstandingLevelText understandingLevelText) {
-        UnderstandingLevelQuestion question = new UnderstandingLevelQuestion(
-                4L,
-                3,
-                "Czy ptaki na wolności wystawiają swoje ciała na działanie promieni słonecznych?",
-                "tak",
-                "częsciowo",
-                "nie",
-                "zależy od pogody",
-                'C',
-                understandingLevelText
-        );
-
-        UnderstandingLevelQuestion savedQuestion = understandingLevelQuestionRepository.save(question);
-        return savedQuestion;
-    }
-
-    public List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(Long number) {
+    public List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(Integer number) {
         return understandingLevelQuestionRepository.getQuestionsToTextNumberX(number);
     }
 }

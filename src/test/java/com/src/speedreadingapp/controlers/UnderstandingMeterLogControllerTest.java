@@ -189,7 +189,7 @@ class UnderstandingMeterLogControllerTest {
 
     @Test
     void getQuestionsToTextNumberX() throws Exception {
-        List<UnderstandingLevelQuestion> list = understandingLevelQuestionRepository.getQuestionsToTextNumberX(1L);
+        List<UnderstandingLevelQuestion> list = understandingLevelQuestionRepository.getQuestionsToTextNumberX(1);
 
         mockMvc.perform(get("/api/v1/understanding-meter/questions/" + 1)
                         .header("Authorization", "Bearer " + accessToken))

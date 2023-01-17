@@ -21,10 +21,10 @@ public class PdfUserController {
     private final PdfUserService pdfUserService;
 
     @PostMapping(value = "/save/{userId}&{pageFrom}&{pageTo}")
-    Long uploadPdf(@RequestParam MultipartFile multipartPdf
-                        , @PathVariable("userId") Long userId
-                            , @PathVariable("pageFrom") Integer pageFrom
-                                , @PathVariable("pageTo") Integer pageTo) throws Exception {
+    Long uploadPdf(@RequestParam MultipartFile multipartPdf,
+                   @PathVariable("userId") Long userId,
+                   @PathVariable("pageFrom") Integer pageFrom,
+                   @PathVariable("pageTo") Integer pageTo) throws Exception {
         return pdfUserService.save(multipartPdf, userId, pageFrom , pageTo);
     }
 

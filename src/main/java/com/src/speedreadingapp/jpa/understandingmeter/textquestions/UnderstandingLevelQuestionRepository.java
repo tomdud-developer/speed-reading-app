@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface UnderstandingLevelQuestionRepository extends JpaRepository<UnderstandingLevelQuestion, Long> {
-    @Query("SELECT u FROM understanding_level_question u WHERE u.understandingLevelText.id = ?1")
-    public List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(Long number);
+    @Query("SELECT u FROM understanding_level_question u WHERE u.understandingLevelText.index = ?1")
+    public List<UnderstandingLevelQuestion> getQuestionsToTextNumberX(Integer number);
 }

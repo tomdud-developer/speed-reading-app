@@ -18,7 +18,6 @@ public class UserProgressController {
         return userProgressService.getUserProgressByUserId(userId);
     }
 
-
     @PostMapping(value = "/confirm-exercise/{userId}&{exerciseNumber}")
     public ResponseEntity<String> confirmExercise(@PathVariable Long userId, @PathVariable Integer exerciseNumber) throws Exception {
         Integer confirm =  userProgressService.confirmExercise(userId, exerciseNumber);
