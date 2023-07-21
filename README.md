@@ -14,6 +14,10 @@ server using Docker containerization technology.
 
 **Frontend part repository (README is the same): https://github.com/tomdud-developer/speed-reading-app-frontend**
 
+## Versions
+- V1 - that was my engineering project
+- V2 - I decide to rewrite application, because I have done a lot of mistakes during my learning process, I want to develop application using good programming practices
+
 ## Tech Stack
 
 **Backend:** Java, Spring, Spring Boot, Tomcat, Spring Security, Gradle, PostgreSQL, Mockito, JUnit, JWT Token
