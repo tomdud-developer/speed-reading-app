@@ -34,7 +34,6 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                // Uruchom kontener z użyciem zbudowanego obrazu
                 sh 'docker run -d -p 8080:8081 speedreadingapp:latest'
             }
         }
