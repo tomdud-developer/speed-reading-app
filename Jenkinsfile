@@ -38,6 +38,12 @@ pipeline {
             }
         }
 
+        stage('Remove Docker Container') {
+            steps {
+                sh 'docker rm speedreadingappbackend || true'
+            }
+        }
+
         stage('Run Docker Container') {
             steps {
                 sh 'docker run -d -p 8081:8080 --name speedreadingappbackend speedreadingappbackend:latest'
