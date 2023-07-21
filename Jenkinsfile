@@ -1,10 +1,16 @@
 pipeline {
+
     agent any
+
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'jenkins-deploy-branch', description: 'Branch used for production code')
+    }
+
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/tomdud-developer/speed-reading-app.git'
+                git branch: "${params.BRANCH}", url: 'https://github.com/tomdud-developer/speed-reading-app.git'
             }
         }
 
