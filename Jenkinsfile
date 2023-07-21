@@ -20,21 +20,15 @@ pipeline {
             }
         }
 
-        stage('Package') {
-            steps {
-                sh './gradlew bootJar'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t speedreadingapp:latest .'
+                sh 'docker build -t speedreadingappbackend:latest .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 8080:8081 speedreadingapp:latest'
+                sh 'docker run -d -p 8080:8081 speedreadingappbackend:latest'
             }
         }
     }
