@@ -4,6 +4,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'jenkins-deploy-branch', description: 'Branch used for production code')
+        string(name: 'VAULT_TOKEN', defaultValue: '', description: 'VAULT_TOKEN')
     }
 
 
@@ -46,7 +47,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 8081:8081 --name speedreadingappbackend speedreadingappbackend:latest --restart=always'
+                sh 'docker run -d -p 8081:8081 --name speedreadingappbackend --restart=always -e VAULT_TOKEN=${VAULT_TOKEN} speedreadingappbackend:latest'
             }
         }
     }
