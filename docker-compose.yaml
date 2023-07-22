@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - '80:80'
+    environment:
+      MYSQL_USERNAME: ${PHPMYADMIN_USERNAME}
+      MYSQL_ROOT_PASSWORD: ${PHPMYADMIN_PASSWORD}
+
+  vault:
+    image: hashicorp/vault
+    container_name: dev-vault
+    cap_add:
+      - IPC_LOCK
+
+volumes:
+  my-db:
