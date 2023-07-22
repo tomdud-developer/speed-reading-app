@@ -46,7 +46,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 8081:8080 --name speedreadingappbackend speedreadingappbackend:latest'
+                sh 'docker run -d -p 8081:8081 --name speedreadingappbackend speedreadingappbackend:latest'
             }
         }
     }

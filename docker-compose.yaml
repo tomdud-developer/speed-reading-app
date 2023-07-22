@@ -23,6 +23,8 @@ services:
 
   vault:
     image: hashicorp/vault
+    ports:
+      - '8200:8200'
     container_name: dev-vault
     cap_add:
       - IPC_LOCK
