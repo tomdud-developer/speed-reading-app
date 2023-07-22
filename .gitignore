@@ -1,8 +1,6 @@
 HELP.md
 .env
 .gradle
-application.yml
-application.proporties
 gradle.properties
 src/main/java/com/src/speedreadingapp/security/config/Secrets.java
 build/
