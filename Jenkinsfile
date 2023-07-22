@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'BRANCH', defaultValue: 'jenkins-deploy-branch', description: 'Branch used for production code'),
+        string(name: 'BRANCH', defaultValue: 'jenkins-deploy-branch', description: 'Branch used for production code')
         string(name: 'VAULT_TOKEN', defaultValue: 'x', description: 'VAULT_TOKEN')
     }
 
