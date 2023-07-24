@@ -21,13 +21,5 @@ services:
       MYSQL_USERNAME: ${PHPMYADMIN_USERNAME}
       MYSQL_ROOT_PASSWORD: ${PHPMYADMIN_PASSWORD}
 
-  vault:
-    image: hashicorp/vault
-    ports:
-      - '8200:8200'
-    container_name: dev-vault
-    cap_add:
-      - IPC_LOCK
-
 volumes:
   my-db:

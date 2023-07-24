@@ -1,15 +1,15 @@
-server:
-  port: 8081
-
 spring:
   cloud:
     vault:
+      enabled: true
       host: localhost
       port: 8200
       authentication: TOKEN
-      token: hvs.CAESIBI3ECm36UajejdwWdA8_DlO3dxrzMVeVNyzvrY0-AgoGh4KHGh2cy40YkY1UUkwMW1ZSGt0YXBNRklKWDRFenE
+      token: hvs.CAESIGfampUx8uNTENu6IYDKh6erwDLKQvLKwgj5oYa-3awZGh4KHGh2cy5ONFBSSFhBZ2tFelVBbjV5QmhGeU9sdXg
       fail-fast: true
       scheme: http
       kv:
         enabled: true
         application-name: speedreadingapp
+
+

@@ -7,7 +7,6 @@ pipeline {
         string(name: 'VAULT_TOKEN', defaultValue: 'x', description: 'VAULT_TOKEN')
     }
 
-
     stages {
         stage('Checkout') {
             steps {
@@ -17,7 +16,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew build'
+                sh './gradlew bootJar'
             }
         }
 
