@@ -3,6 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/speedreadingapp
+    username: root
+    password: password
