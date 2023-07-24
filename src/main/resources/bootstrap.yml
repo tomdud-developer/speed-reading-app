@@ -7,7 +7,7 @@ spring:
       host: localhost
       port: 8200
       authentication: TOKEN
-      token: ${VAULT_TOKEN}
+      token: hvs.CAESIBI3ECm36UajejdwWdA8_DlO3dxrzMVeVNyzvrY0-AgoGh4KHGh2cy40YkY1UUkwMW1ZSGt0YXBNRklKWDRFenE
       fail-fast: true
       scheme: http
       kv:

@@ -47,7 +47,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d -p 8081:8081 --name speedreadingappbackend -e VAULT_TOKEN=${params.VAULT_TOKEN} --restart=always speedreadingappbackend:latest"
+                sh "docker run -d -p 8081:8081 --name speedreadingappbackend --restart=always speedreadingappbackend:latest"
             }
         }
     }
