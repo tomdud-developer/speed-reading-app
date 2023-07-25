@@ -2,7 +2,9 @@ package com.speedreadingapp.entity;
 
 import com.speedreadingapp.util.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
@@ -11,8 +13,10 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
+@Getter
 @Table(name = "application_user")
 public class ApplicationUser {
 
