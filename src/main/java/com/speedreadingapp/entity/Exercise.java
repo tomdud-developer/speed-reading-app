@@ -1,5 +1,6 @@
 package com.speedreadingapp.entity;
 
+import com.speedreadingapp.util.DifficultyLevel;
 import com.speedreadingapp.util.ExerciseName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,8 +33,9 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     private ExerciseName exerciseName;
 
+    @Enumerated(EnumType.STRING)
+    private DifficultyLevel difficultyLevel;
 
-
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Session session;
 }

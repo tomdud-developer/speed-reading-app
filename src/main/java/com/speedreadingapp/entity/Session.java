@@ -15,22 +15,26 @@ import java.util.Set;
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "training_plan")
-public class TrainingPlan {
+@Table(name = "session")
+public class Session {
+
     @Id
     @SequenceGenerator(
-            name = "training_plan_sequence",
-            sequenceName = "training_plan_sequence",
+            name = "session_sequence",
+            sequenceName = "session_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "training_plan_sequence"
+            generator = "session_sequence"
     )
     @Immutable
     private long id;
 
-    @OneToMany(mappedBy = "trainingPlan", cascade = CascadeType.ALL)
-    private Set<Session> sessions = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TrainingPlan trainingPlan;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
+    private Set<Exercise> exercises = new HashSet<>();
 
 }
