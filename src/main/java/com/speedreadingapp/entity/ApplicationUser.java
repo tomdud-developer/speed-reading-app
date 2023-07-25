@@ -1,5 +1,6 @@
 package com.speedreadingapp.entity;
 
+import com.speedreadingapp.entity.exercise.DisappearNumbersResult;
 import com.speedreadingapp.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -54,4 +55,7 @@ public class ApplicationUser {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "applicationUser", cascade = CascadeType.ALL)
+    private Set<DisappearNumbersResult> disappearNumbersResults = new HashSet<>();
 }
