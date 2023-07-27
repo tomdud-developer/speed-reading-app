@@ -4,11 +4,12 @@ import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.ErrorDTO;
 import com.speedreadingapp.exception.UserAlreadyRegisteredException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Collections;
 
+@RestControllerAdvice
 public class LoginAndRegisterExceptionHandler {
-
 
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ApiResponse<?> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException exception) {
@@ -17,4 +18,5 @@ public class LoginAndRegisterExceptionHandler {
         serviceResponse.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
         return serviceResponse;
     }
+
 }
