@@ -2,12 +2,12 @@ package com.speedreadingapp.service;
 
 import com.speedreadingapp.dto.RegisterRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
-import com.speedreadingapp.exception.UserAlreadyRegisteredException;
 import com.speedreadingapp.repository.ApplicationUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +17,7 @@ import java.util.Optional;
 public class ApplicationUserService implements UserDetailsService {
 
     private final ApplicationUserRepository applicationUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -30,19 +31,14 @@ public class ApplicationUserService implements UserDetailsService {
 
     public String register(RegisterRequestDTO registerRequestDTO) {
 
-        checkIfUserNotAlreadyRegisteredElseThrowException(registerRequestDTO.getEmail());
-
+        registerRequestDTO.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
         ApplicationUser applicationUser = ValueMapper.convertToEntity(registerRequestDTO);
 
-        applicationUser = applicationUserRepository.save(applicationUser);
+        applicationUserRepository.save(applicationUser);
 
         return "User has been registered.";
     }
 
-    private void checkIfUserNotAlreadyRegisteredElseThrowException(String email) throws UserAlreadyRegisteredException {
-        Optional<ApplicationUser> optionalUser = applicationUserRepository.findByEmail(email);
-        if(optionalUser.isPresent())
-            throw new UserAlreadyRegisteredException(String.format("User with email %s already registered", email));
-    }
+
 
 }

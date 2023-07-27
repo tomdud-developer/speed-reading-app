@@ -2,7 +2,6 @@ package com.speedreadingapp.handler;
 
 import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.ErrorDTO;
-import com.speedreadingapp.exception.UserAlreadyRegisteredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestControllerAdvice
@@ -32,12 +30,12 @@ public class LoginAndRegisterExceptionHandler {
         return serviceResponse;
     }
 
-    @ExceptionHandler(UserAlreadyRegisteredException.class)
+/*    @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ApiResponse<?> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException exception) {
         ApiResponse<?> serviceResponse = new ApiResponse<>();
         serviceResponse.setStatus("FAILED");
         serviceResponse.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
         return serviceResponse;
-    }
+    }*/
 
 }

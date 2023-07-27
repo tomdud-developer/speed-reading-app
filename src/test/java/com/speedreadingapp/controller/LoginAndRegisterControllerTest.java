@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +52,7 @@ class LoginAndRegisterControllerTest {
     }
 
     @Test
-    void register() throws Exception {
+    void givenUser_thenRegister_shouldStatusCreated() throws Exception {
         RegisterRequestDTO registerRequestDTO = RegisterRequestDTO
                 .builder()
                 .email("test@test.com")
@@ -76,6 +78,37 @@ class LoginAndRegisterControllerTest {
                                 .value("User has been registered.")
                 );
     }
+
+    @Test
+    void givenUser_thenRegister_shouldThrowAlreadyRegisteredException() throws Exception {
+        RegisterRequestDTO registerRequestDTO = RegisterRequestDTO
+                .builder()
+                .email("test@test.com")
+                .password("testPassword")
+                .firstname("testFirstname")
+                .lastname("testLastname")
+                .build();
+
+        ApplicationUser applicationUser = ValueMapper.convertToEntity(registerRequestDTO);
+
+        when(applicationUserRepository.save(any())).thenReturn(applicationUser);
+        when(applicationUserRepository.findByEmail(any())).thenReturn(Optional.of(applicationUser));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post(REGISTER_ENDPOINT_URL)
+                        .content(Objects.requireNonNull(
+                                ObjectToJsonAsStringConverter.convert(registerRequestDTO))
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.errors[0].errorMessage")
+                                .value("This email is already exist")
+                );
+    }
+
+
 
 
 
