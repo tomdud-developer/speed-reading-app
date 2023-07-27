@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("api/v1")
 @AllArgsConstructor
 @Slf4j
 public class LoginAndRegisterController {
@@ -25,7 +25,7 @@ public class LoginAndRegisterController {
     private final ApplicationUserService applicationUserService;
 
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
 
         log.info("LoginAndRegisterController::register request body {}",

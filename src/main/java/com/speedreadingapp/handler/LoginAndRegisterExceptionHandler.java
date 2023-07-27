@@ -14,11 +14,10 @@ import java.util.List;
 @RestControllerAdvice
 public class LoginAndRegisterExceptionHandler {
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<?> handleMethodArgumentException(MethodArgumentNotValidException exception) {
-        ApiResponse<?> serviceResponse = new ApiResponse<>();
+    public ApiResponse<String> handleMethodArgumentException(MethodArgumentNotValidException exception) {
+        ApiResponse<String> serviceResponse = new ApiResponse<>();
         List<ErrorDTO> errors = new ArrayList<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(error -> {

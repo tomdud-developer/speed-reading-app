@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class LoginAndRegisterControllerTest {
 
-    private static final String REGISTER_ENDPOINT_URL = "/register";
+    private static final String REGISTER_ENDPOINT_URL = "/api/v1/register";
 
     @InjectMocks
     private LoginAndRegisterController loginAndRegisterController;
