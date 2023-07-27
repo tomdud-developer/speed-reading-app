@@ -4,6 +4,7 @@ import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.RegisterRequestDTO;
 import com.speedreadingapp.service.ApplicationUserService;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class LoginAndRegisterController {
 
 
     @PostMapping("register")
-    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+    public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
 
         log.info("LoginAndRegisterController::register request body {}",
                 ObjectToJsonAsStringConverter.convert(registerRequestDTO));
