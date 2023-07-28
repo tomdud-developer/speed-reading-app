@@ -15,3 +15,29 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     show-sql: true
+
+jwt:
+  expirationInMinutes: 120
+  sha:
+    secretKey: |
+      MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMUxNN6nMTWPe4hr
+      mjjJ9u/O1fwXdyZSTxTwNeHYPQ+dEfCJ47S00VbD0RHksNbuz3N/pbv+fB/4LxMR
+      3QLszK17VwMbOzYIIqtGSQ80M0TgwqmOn+GQdsAztnUAK2GFsrBokxlSO+Timgb4
+      8tA+CLTlCQa+IH5jHNYqBCCCxA+5AgMBAAECgYAoo0VkBUys3w70REiaH3UWYqfS
+      tftGGHxXslFIY8nhp9sEmUYl/YWOvfgeGeUfxkNWaB39qipmZD0/TtUfPzHGyexB
+      c5kp5m45j+sbYIwP+ohAYE2UEQ5Z1viDfOnFhzwlYK7NmX2Xz4TCEQ5V+5u1nAbx
+      0goClmoWaFp6t6SwyQJBAPB9E9mL/8DOqsBAHtYIvdvYLMbqkC2TkAMV44QDr4sp
+      fql6AksbWQ984XA0MIDV8f6FVEjXT8QO5/qpXvJEXrsCQQDR6TlLt/qA8pNrJQr8
+      j5VDAbVeK5ZUs5hqNFRFzrbZj6pIGRWoVPMkzBEkgWGRuO+2xsLaqG+NL7rPUGL6
+      nhYbAkASgk3ozHGesUlLCqRU7M9QAE9R7/Owzk6jLigYnQABwevRt2Y9yZkNLBtd
+      u2aQQ+cgI7rc8FVfTZZlIGwCUWjJAkEAu9iSRYhmzG5ILmH/6vQzBrvIqnUnGrV9
+      d81MfQv35coDAHIyR2l+DTfxP1HpFpcBLffA+Bwzd413B39QlCZUcQJBANETTrGy
+      Ju37Dpe/9ohuDgQLkAGTEkEQpLJy4QMlpvHqSX5A0Csa0VQ4n6FN8jIUc+zCkJ8N
+      +HL4Egh52z61kVQ=
+    publicKey: |
+      MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFMTTepzE1j3uIa5o4yfbvztX8
+      F3cmUk8U8DXh2D0PnRHwieO0tNFWw9ER5LDW7s9zf6W7/nwf+C8TEd0C7Myte1cD
+      Gzs2CCKrRkkPNDNE4MKpjp/hkHbAM7Z1ACthhbKwaJMZUjvk4poG+PLQPgi05QkG
+      viB+YxzWKgQggsQPuQIDAQAB
+
+
