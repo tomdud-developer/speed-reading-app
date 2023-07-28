@@ -4,6 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.speedreadingapp.dto.ApiResponse;
+import com.speedreadingapp.dto.ErrorDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -40,8 +44,15 @@ public class JWTValidationFilter extends OncePerRequestFilter {
                 proceedAuthorizationJWTToken(token);
                 filterChain.doFilter(request, response);
             } catch (JWTVerificationException exception) {
-                log.error("Error logging in: {}", exception.getMessage());
-                // Invalid signature/claims
+                ApiResponse<String> apiResponse = new ApiResponse<>();
+                List<ErrorDTO> errors = new ArrayList<>();
+                errors.add(new ErrorDTO("Authorization JWT token", exception.getMessage()));
+                apiResponse.setErrors(errors);
+                apiResponse.setStatus("Forbidden");
+
+                response.setContentType("application/json");
+                response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         } else filterChain.doFilter(request, response);
     }
