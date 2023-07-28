@@ -2,6 +2,7 @@ package com.speedreadingapp.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,7 +66,7 @@ public class JWTValidationFilter extends OncePerRequestFilter {
         return authorizationHeader.substring("Bearer ".length());
     }
 
-    private void proceedAuthorizationJWTToken(String token) {
+    protected void proceedAuthorizationJWTToken(String token) {
         JWTVerifier verifier = JWT.require(jwtAlgorithmProvider.getAlgorithm()).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         String username = decodedJWT.getSubject();
