@@ -6,6 +6,7 @@ import com.speedreadingapp.dto.RegisterRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.repository.ApplicationUserRepository;
 import com.speedreadingapp.service.ValueMapper;
+import com.speedreadingapp.util.MockApplicationUserFactory;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
@@ -44,24 +45,16 @@ class JWTGeneratorFilterTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private MockApplicationUserFactory mockApplicationUserFactory;
 
 
     @Test
-    void attemptAuthenticationSuccessfull() throws Exception {
+    void attemptAuthenticationSuccess() throws Exception {
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         loginRequestDTO.setEmail("test@test.com");
         loginRequestDTO.setPassword("testPassword");
-
-        RegisterRequestDTO registerRequestDTO = RegisterRequestDTO
-                .builder()
-                .email("test@test.com")
-                .password(passwordEncoder.encode("testPassword"))
-                .firstname("testFirstname")
-                .lastname("testLastname")
-                .build();
-
-        ApplicationUser applicationUser = ValueMapper.convertToEntity(registerRequestDTO);
 
         Mockito.when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
                 .thenReturn(Optional.of(applicationUser));
@@ -76,5 +69,30 @@ class JWTGeneratorFilterTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.access_token").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.refresh_token").exists());
+    }
+
+    @Test
+    void attemptAuthenticationFailed() throws Exception {
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setEmail("test@test.com");
+        loginRequestDTO.setPassword("testBadPassword");
+
+        Mockito.when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
+                .thenReturn(Optional.of(applicationUser));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post(LOGIN_ENDPOINT)
+                        .content(Objects.requireNonNull(
+                                ObjectToJsonAsStringConverter.convert(loginRequestDTO))
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(
+                        MockMvcResultMatchers
+                                .jsonPath("$.errors[0].errorMessage")
+                                .value("Invalid login or password"));
     }
 }
