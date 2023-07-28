@@ -3,6 +3,7 @@ package com.speedreadingapp.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.speedreadingapp.configuration.JWTConfigurationProperties;
 import com.speedreadingapp.dto.LoginRequestDTO;
 import com.speedreadingapp.security.keyreader.KeyReader;
 import com.speedreadingapp.security.keyreader.PemKeyRetriever;
@@ -18,7 +19,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,13 +32,13 @@ import java.util.*;
 
 public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
 
-    //@Value("${jwt.sha.publicKey}")
+/*    @Value("${jwt.sha.publicKey}")
     private String jwtShaPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFMTTepzE1j3uIa5o4yfbvztX8\n" +
             "F3cmUk8U8DXh2D0PnRHwieO0tNFWw9ER5LDW7s9zf6W7/nwf+C8TEd0C7Myte1cD\n" +
             "Gzs2CCKrRkkPNDNE4MKpjp/hkHbAM7Z1ACthhbKwaJMZUjvk4poG+PLQPgi05QkG\n" +
             "viB+YxzWKgQggsQPuQIDAQAB";
 
-    //@Value("${jwt.sha.secretKey}")
+    @Value("${jwt.sha.secretKey}")
     private String jwtShaSecretKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMUxNN6nMTWPe4hr\n" +
             "mjjJ9u/O1fwXdyZSTxTwNeHYPQ+dEfCJ47S00VbD0RHksNbuz3N/pbv+fB/4LxMR\n" +
             "3QLszK17VwMbOzYIIqtGSQ80M0TgwqmOn+GQdsAztnUAK2GFsrBokxlSO+Timgb4\n" +
@@ -52,16 +52,16 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
             "u2aQQ+cgI7rc8FVfTZZlIGwCUWjJAkEAu9iSRYhmzG5ILmH/6vQzBrvIqnUnGrV9\n" +
             "d81MfQv35coDAHIyR2l+DTfxP1HpFpcBLffA+Bwzd413B39QlCZUcQJBANETTrGy\n" +
             "Ju37Dpe/9ohuDgQLkAGTEkEQpLJy4QMlpvHqSX5A0Csa0VQ4n6FN8jIUc+zCkJ8N\n" +
-            "+HL4Egh52z61kVQ=";
+            "+HL4Egh52z61kVQ=";*/
 
-    @Value("${jwt.expirationInMinutes}")
-    private long jwtExpirationInMinutes = 120;
 
+    private final JWTConfigurationProperties jwtConfigurationProperties;
     private final AuthenticationManager authenticationManager;
 
-    public JWTGeneratorFilter(AuthenticationManager authenticationManager) {
+    public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTConfigurationProperties jwtConfigurationProperties) {
         super(new AntPathRequestMatcher("/api/v1/login"));
         this.authenticationManager = authenticationManager;
+        this.jwtConfigurationProperties = jwtConfigurationProperties;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
             throws IOException {
 
         String jwt = JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * jwtExpirationInMinutes))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * jwtConfigurationProperties.getExpirationInMinutes()))
                 .withSubject(authenticationResult.getName())
                 .withClaim("username", authenticationResult.getName())
                 .withClaim("authorities", retrieveAuthorities(authenticationResult))
@@ -98,7 +98,7 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
 
     private Algorithm getAlgorithm() {
         try {
-            PemKeyRetriever pemKeyRetriever = new KeyReader("RSA", jwtShaSecretKey, jwtShaPublicKey);
+            PemKeyRetriever pemKeyRetriever = new KeyReader("RSA", jwtConfigurationProperties.getSecretKey(), jwtConfigurationProperties.getPublicKey());
 
             RSAPublicKey rsaPublicKey = (RSAPublicKey) pemKeyRetriever.getPemPublicKey();
             RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) pemKeyRetriever.getPemPrivateKey();

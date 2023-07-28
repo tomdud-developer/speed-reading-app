@@ -1,5 +1,6 @@
 package com.speedreadingapp.security;
 
+import com.speedreadingapp.configuration.JWTConfigurationProperties;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTConfigurationProperties jwtConfigurationProperties;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -50,7 +52,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/register"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/login"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterBefore(new JWTGeneratorFilter(authenticationManagerBean()), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTGeneratorFilter(authenticationManagerBean(), jwtConfigurationProperties), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/register")).permitAll()
