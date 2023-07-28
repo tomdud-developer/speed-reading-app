@@ -17,7 +17,8 @@ spring:
     show-sql: true
 
 jwt:
-  expirationInMinutes: 120
+  accessTokenExpirationInMinutes: 120
+  refreshTokenExpirationInMinutes: 1200
   secretKey: "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMUxNN6nMTWPe4hr\
     mjjJ9u/O1fwXdyZSTxTwNeHYPQ+dEfCJ47S00VbD0RHksNbuz3N/pbv+fB/4LxMR\
     3QLszK17VwMbOzYIIqtGSQ80M0TgwqmOn+GQdsAztnUAK2GFsrBokxlSO+Timgb4\

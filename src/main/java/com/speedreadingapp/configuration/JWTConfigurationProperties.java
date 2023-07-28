@@ -11,5 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class JWTConfigurationProperties {
     private String secretKey;
     private String publicKey;
-    private int expirationInMinutes;
+    private int accessTokenExpirationInMinutes;
+    private int refreshTokenExpirationInMinutes;
 }
