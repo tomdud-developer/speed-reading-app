@@ -8,6 +8,10 @@ import java.time.LocalDate;
 
 public class ValueMapper {
 
+    private ValueMapper() {
+
+    }
+
     public static ApplicationUser convertToEntity(RegisterRequestDTO registerRequestDTO) {
 
         ApplicationUser applicationUser = new ApplicationUser();

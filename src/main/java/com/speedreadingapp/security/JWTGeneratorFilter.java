@@ -35,10 +35,11 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JWTConfigurationProperties jwtConfigurationProperties;
     private final AuthenticationManager authenticationManager;
-
-    public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTConfigurationProperties jwtConfigurationProperties) {
+    private final JWTAlgorithmProvider jwtAlgorithmProvider;
+    public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTAlgorithmProvider jwtAlgorithmProvider, JWTConfigurationProperties jwtConfigurationProperties) {
         super(new AntPathRequestMatcher("/api/v1/login"));
         this.authenticationManager = authenticationManager;
+        this.jwtAlgorithmProvider = jwtAlgorithmProvider;
         this.jwtConfigurationProperties = jwtConfigurationProperties;
     }
 
@@ -64,34 +65,21 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * jwtConfigurationProperties.getAccessTokenExpirationInMinutes()))
                 .withSubject(authenticationResult.getName())
                 .withClaim("username", authenticationResult.getName())
-                .withClaim("authorities", retrieveAuthorities(authenticationResult))
+                .withClaim("roles", retrieveAuthorities(authenticationResult))
                 .withClaim("generation-datetime", Instant.now())
-                .sign(getAlgorithm());
+                .sign(jwtAlgorithmProvider.getAlgorithm());
 
         String refreshToken = JWT.create()
                 .withExpiresAt(new Date(System.currentTimeMillis() + 30L * 60 * jwtConfigurationProperties.getAccessTokenExpirationInMinutes()))
                 .withSubject(authenticationResult.getName())
                 .withIssuer(request.getRequestURL().toString())
-                .sign(getAlgorithm());
+                .sign(jwtAlgorithmProvider.getAlgorithm());
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
 
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-    }
-
-    private Algorithm getAlgorithm() {
-        try {
-            PemKeyRetriever pemKeyRetriever = new KeyReader("RSA", jwtConfigurationProperties.getSecretKey(), jwtConfigurationProperties.getPublicKey());
-
-            RSAPublicKey rsaPublicKey = (RSAPublicKey) pemKeyRetriever.getPemPublicKey();
-            RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) pemKeyRetriever.getPemPrivateKey();
-
-            return  Algorithm.RSA256(rsaPublicKey, rsaPrivateKey);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new ExceptionWhenDefiningAlgorithm(e.getMessage());
-        }
     }
 
     private List<String> retrieveAuthorities(Authentication authentication) {

@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -30,6 +31,7 @@ public class SecurityConfiguration {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTConfigurationProperties jwtConfigurationProperties;
+    private final JWTAlgorithmProvider jwtAlgorithmProvider;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -52,11 +54,19 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/register"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/login"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterBefore(new JWTGeneratorFilter(authenticationManagerBean(), jwtConfigurationProperties), BasicAuthenticationFilter.class)
+                .addFilterAfter(
+                        new JWTGeneratorFilter(authenticationManagerBean(),
+                                jwtAlgorithmProvider,
+                                jwtConfigurationProperties),
+                        BasicAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JWTValidationFilter(jwtAlgorithmProvider),
+                        BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/register")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/login")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
@@ -70,13 +80,10 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean() {
-        try {
-            return authenticationConfiguration.getAuthenticationManager();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
+
 
 
 }
