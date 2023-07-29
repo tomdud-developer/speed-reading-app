@@ -1,15 +1,18 @@
 package com.speedreadingapp.security;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.speedreadingapp.configuration.JWTConfigurationProperties;
 import com.speedreadingapp.dto.AuthResponseDTO;
 import com.speedreadingapp.dto.LoginRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.repository.ApplicationUserRepository;
 import com.speedreadingapp.util.MockApplicationUserFactory;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
+import com.speedreadingapp.util.Role;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,28 +33,24 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Objects;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JWTValidationFilterTest {
 
     private final String TEST_ENDPOINT = "/test";
-    private final String LOGIN_ENDPOINT = "/api/v1/login";
 
     @MockBean
     private ApplicationUserRepository applicationUserRepository;
-    @MockBean
-    private JWTVerifier verifier;
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,70 +58,145 @@ class JWTValidationFilterTest {
     @Autowired
     private MockApplicationUserFactory mockApplicationUserFactory;
 
-    private AuthResponseDTO authResponseDTO;
+    @Autowired
+    JWTAlgorithmProvider jwtAlgorithmProvider;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
-        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
-
-        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
-        loginRequestDTO.setEmail("test@test.com");
-        loginRequestDTO.setPassword("testPassword");
-
-        when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
-                .thenReturn(Optional.of(applicationUser));
-
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post(LOGIN_ENDPOINT)
-                        .content(Objects.requireNonNull(
-                                ObjectToJsonAsStringConverter.convert(loginRequestDTO))
-                        )
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.access_token").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.refresh_token").exists())
-                .andReturn();
-        String jsonResponse = mvcResult.getResponse().getContentAsString();
-        this.authResponseDTO = new ObjectMapper().readValue(jsonResponse, AuthResponseDTO.class);
-    }
 
     @Test
     void attemptAuthorizeSuccess() throws Exception {
+        //given
         ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + 10000L)) // 10 second
+                .withSubject(applicationUser.getEmail())
+                .withClaim("username", applicationUser.getEmail())
+                .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
+                .withClaim("generation-datetime", Instant.now())
+                .sign(jwtAlgorithmProvider.getAlgorithm());
 
+        //when
         when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
                 .thenReturn(Optional.of(applicationUser));
 
+        //then
         mockMvc.perform(MockMvcRequestBuilders
                         .get(TEST_ENDPOINT)
-                        .header("Authorization", "Bearer " + authResponseDTO.getAccess_token())
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-
-    //TODO
-    void attemptAuthorizeFailedTokenExpired() throws Exception {
+    @Test
+    void attemptAuthorizeWithWrongTokenFailed() throws Exception {
+        //given
         ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + 10000L)) // 10 second
+                .withSubject(applicationUser.getEmail())
+                .withClaim("username", applicationUser.getEmail())
+                .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
+                .withClaim("generation-datetime", Instant.now())
+                .sign(jwtAlgorithmProvider.getAlgorithm());
 
+        //when
+        StringBuilder stringBuilder = new StringBuilder(accessToken);
+        accessToken = stringBuilder.delete(50, 50).insert(55, 'X').toString();
         when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
                 .thenReturn(Optional.of(applicationUser));
 
-        doThrow(new JWTVerificationException("The Token has expired on xxx.", null))
-                .when(verifier).verify(authResponseDTO.getAccess_token());
-
+        //then
         mockMvc.perform(MockMvcRequestBuilders
                         .get(TEST_ENDPOINT)
-                        .header("Authorization", "Bearer " + authResponseDTO.getAccess_token())
+                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andExpect(
-                        MockMvcResultMatchers
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void attemptAuthorizeFailedWithClaimsFromTokenNotCoverWithClaimsFromDatabase() throws Exception {
+        //given
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
+        List<String> listClaims = new ArrayList<>(applicationUser.getRoles().stream().map(Role::toString).toList());
+        listClaims.add("ADMIN");
+
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + 10000L)) // 10 second
+                .withSubject(applicationUser.getEmail())
+                .withClaim("username", applicationUser.getEmail())
+                .withClaim("roles", listClaims)
+                .withClaim("generation-datetime", Instant.now())
+                .sign(jwtAlgorithmProvider.getAlgorithm());
+
+        //when
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
+                .thenReturn(Optional.of(applicationUser));
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(TEST_ENDPOINT)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void attemptAuthorizeFailedWhenUserIsNotInDatabaseButTokenIsCorrect() throws Exception {
+        //given
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + 10000L)) // 10 second
+                .withSubject(applicationUser.getEmail())
+                .withClaim("username", applicationUser.getEmail())
+                .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
+                .withClaim("generation-datetime", Instant.now())
+                .sign(jwtAlgorithmProvider.getAlgorithm());
+
+
+        //when
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
+                .thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(TEST_ENDPOINT)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers
                                 .jsonPath("$.errors[0].errorMessage")
-                                .value("The Token has expired on xxx."));
+                                .value(String.format("User with email %s not found", applicationUser.getEmail()))
+                );
+    }
+
+
+    @Test
+    void attemptAuthorizeFailedWithExpiredToken() throws Exception {
+        //given
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() - 10000L)) // Create token with expired 10s ago
+                .withSubject(applicationUser.getEmail())
+                .withClaim("username", applicationUser.getEmail())
+                .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
+                .withClaim("generation-datetime", Instant.now())
+                .sign(jwtAlgorithmProvider.getAlgorithm());
+
+        //when
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
+                .thenReturn(Optional.of(applicationUser));
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(TEST_ENDPOINT)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
 

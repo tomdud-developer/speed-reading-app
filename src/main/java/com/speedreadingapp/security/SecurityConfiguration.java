@@ -1,6 +1,8 @@
 package com.speedreadingapp.security;
 
 import com.speedreadingapp.configuration.JWTConfigurationProperties;
+import com.speedreadingapp.repository.ApplicationUserRepository;
+import com.speedreadingapp.service.ApplicationUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,7 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTConfigurationProperties jwtConfigurationProperties;
     private final JWTAlgorithmProvider jwtAlgorithmProvider;
+    private final ApplicationUserRepository applicationUserRepository;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -60,7 +63,7 @@ public class SecurityConfiguration {
                                 jwtConfigurationProperties),
                         BasicAuthenticationFilter.class)
                 .addFilterBefore(
-                        new JWTValidationFilter(jwtAlgorithmProvider),
+                        new JWTValidationFilter(jwtAlgorithmProvider, applicationUserRepository),
                         BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
