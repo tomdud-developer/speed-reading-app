@@ -117,6 +117,9 @@ public class JWTValidationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().equals("/api/v1/login") || request.getServletPath().equals("/api/v1/token/refresh");
+        return request.getServletPath().equals("/api/v1/login")
+                || request.getServletPath().equals("/api/v1/token/refresh")
+                || request.getServletPath().equals("/api/v1/register")
+                ;
     }
 }
