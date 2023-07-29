@@ -7,6 +7,14 @@ spring:
     url: jdbc:mysql://localhost:3306/speedreadingapp
     username: ${db.username}
     password: ${db.password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
 
 #For temporary test on server before i didnt provide new keys in vault
 jwt:
