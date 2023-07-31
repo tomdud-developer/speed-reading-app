@@ -1,35 +1,21 @@
 package com.speedreadingapp.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.JWTVerifier;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.speedreadingapp.configuration.JWTConfigurationProperties;
-import com.speedreadingapp.dto.AuthResponseDTO;
-import com.speedreadingapp.dto.LoginRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.repository.ApplicationUserRepository;
+import com.speedreadingapp.security.token.JWTAlgorithmProvider;
 import com.speedreadingapp.util.MockApplicationUserFactory;
-import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
 import com.speedreadingapp.util.Role;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

@@ -1,4 +1,4 @@
-package com.speedreadingapp.security;
+package com.speedreadingapp.security.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -84,19 +85,15 @@ public class JWTTokenService implements JWTManager {
 
     private void checkClaimsFromTokenWithRolesFromDatabase(UserDetails userDetails, Collection<SimpleGrantedAuthority> authoritiesFromToken)
             throws AuthoritiesNotMatchWithTokenClaimsException {
-        Collection<SimpleGrantedAuthority> authoritiesFromDatabase =
-                userDetails.getAuthorities().stream().map(
-                        authority -> new SimpleGrantedAuthority(authority.getAuthority())
-                ).toList();
-
-        for (SimpleGrantedAuthority authority : authoritiesFromDatabase) {
-            if(!authoritiesFromToken.contains(authority))
-                throw new AuthoritiesNotMatchWithTokenClaimsException();
-        }
+        Collection<String> authoritiesFromDatabase = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
 
         for (SimpleGrantedAuthority authority : authoritiesFromToken) {
-            if(!authoritiesFromDatabase.contains(authority))
+            if (!authoritiesFromDatabase.contains(authority.getAuthority())) {
                 throw new AuthoritiesNotMatchWithTokenClaimsException();
+            }
         }
     }
 

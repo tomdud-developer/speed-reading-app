@@ -1,4 +1,4 @@
-package com.speedreadingapp.security;
+package com.speedreadingapp.security.token;
 
 import org.springframework.security.core.Authentication;
 

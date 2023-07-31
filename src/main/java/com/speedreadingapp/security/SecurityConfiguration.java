@@ -1,8 +1,6 @@
 package com.speedreadingapp.security;
 
-import com.speedreadingapp.configuration.JWTConfigurationProperties;
-import com.speedreadingapp.repository.ApplicationUserRepository;
-import com.speedreadingapp.service.ApplicationUserService;
+import com.speedreadingapp.security.token.JWTTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;

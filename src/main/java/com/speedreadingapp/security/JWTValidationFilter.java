@@ -1,32 +1,22 @@
 package com.speedreadingapp.security;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.ErrorDTO;
-import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.exception.AuthoritiesNotMatchWithTokenClaimsException;
-import com.speedreadingapp.repository.ApplicationUserRepository;
+import com.speedreadingapp.security.token.JWTTokenService;
+import com.speedreadingapp.security.token.JWTTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -42,8 +32,8 @@ public class JWTValidationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
-            String token = retrieveTokenFromHeader(authorizationHeader);
+        if (JWTTokenUtils.isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
+            String token = JWTTokenUtils.retrieveTokenFromHeader(authorizationHeader);
             try {
                 jwtTokenService.validate(token);
                 filterChain.doFilter(request, response);
@@ -59,14 +49,6 @@ public class JWTValidationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } else filterChain.doFilter(request, response);
-    }
-
-    private boolean isContainAuthorizationHeaderWithBearerKeyword(String authorizationHeader) {
-        return authorizationHeader != null && authorizationHeader.startsWith("Bearer ");
-    }
-
-    private String retrieveTokenFromHeader(String authorizationHeader) {
-        return authorizationHeader.substring("Bearer ".length());
     }
 
     @Override

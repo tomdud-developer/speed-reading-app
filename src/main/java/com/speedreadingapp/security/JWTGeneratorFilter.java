@@ -1,33 +1,21 @@
 package com.speedreadingapp.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.speedreadingapp.configuration.JWTConfigurationProperties;
 import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.ErrorDTO;
 import com.speedreadingapp.dto.LoginRequestDTO;
-import com.speedreadingapp.exception.ExceptionWhenDefiningAlgorithm;
-import com.speedreadingapp.security.keyreader.KeyReader;
-import com.speedreadingapp.security.keyreader.PemKeyRetriever;
+import com.speedreadingapp.security.token.JWTTokenService;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
 import java.util.*;
 
 

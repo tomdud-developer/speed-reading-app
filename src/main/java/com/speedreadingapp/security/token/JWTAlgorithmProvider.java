@@ -1,4 +1,4 @@
-package com.speedreadingapp.security;
+package com.speedreadingapp.security.token;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.speedreadingapp.configuration.JWTConfigurationProperties;
