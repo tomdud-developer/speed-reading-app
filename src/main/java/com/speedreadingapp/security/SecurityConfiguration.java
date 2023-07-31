@@ -32,9 +32,6 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTConfigurationProperties jwtConfigurationProperties;
-    private final JWTAlgorithmProvider jwtAlgorithmProvider;
-    private final ApplicationUserRepository applicationUserRepository;
     private final JWTTokenService jwtTokenService;
 
     @Bean
@@ -61,9 +58,7 @@ public class SecurityConfiguration {
                 .addFilterAfter(
                         new JWTGeneratorFilter(authenticationManagerBean(), jwtTokenService),
                         BasicAuthenticationFilter.class)
-                .addFilterBefore(
-                        new JWTValidationFilter(jwtAlgorithmProvider, applicationUserRepository),
-                        BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTValidationFilter(jwtTokenService), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/register")).permitAll()

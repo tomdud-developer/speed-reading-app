@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,13 +33,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 public class JWTValidationFilter extends OncePerRequestFilter {
 
+    private final JWTTokenService jwtTokenService;
 
-    private final JWTAlgorithmProvider jwtAlgorithmProvider;
-    private final ApplicationUserRepository applicationUserRepository;
-
-    public JWTValidationFilter(JWTAlgorithmProvider jwtAlgorithmProvider, ApplicationUserRepository applicationUserRepository) {
-        this.jwtAlgorithmProvider = jwtAlgorithmProvider;
-        this.applicationUserRepository = applicationUserRepository;
+    public JWTValidationFilter(JWTTokenService jwtTokenService) {
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -47,14 +45,14 @@ public class JWTValidationFilter extends OncePerRequestFilter {
         if (isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
             String token = retrieveTokenFromHeader(authorizationHeader);
             try {
-                proceedAuthorizationJWTToken(token);
+                jwtTokenService.validate(token);
                 filterChain.doFilter(request, response);
             } catch (JWTVerificationException | UsernameNotFoundException | AuthoritiesNotMatchWithTokenClaimsException exception) {
-                ApiResponse<String> apiResponse = new ApiResponse<>();
-                List<ErrorDTO> errors = new ArrayList<>();
-                errors.add(new ErrorDTO("access_token", exception.getMessage()));
-                apiResponse.setErrors(errors);
-                apiResponse.setStatus("UNAUTHORIZED");
+                ApiResponse<String> apiResponse = ApiResponse
+                        .<String>builder()
+                        .status("UNAUTHORIZED")
+                        .errors(List.of(new ErrorDTO("access_token", exception.getMessage())))
+                        .build();
 
                 response.setContentType("application/json");
                 response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));
@@ -69,50 +67,6 @@ public class JWTValidationFilter extends OncePerRequestFilter {
 
     private String retrieveTokenFromHeader(String authorizationHeader) {
         return authorizationHeader.substring("Bearer ".length());
-    }
-
-    private void proceedAuthorizationJWTToken(String token) throws JWTVerificationException, UsernameNotFoundException {
-        JWTVerifier verifier = JWT.require(jwtAlgorithmProvider.getAlgorithm()).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-
-        String email = decodedJWT.getSubject();
-        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        Arrays.stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
-
-        UserDetails userDetails = checkIfUserIsInDatabase(email);
-        checkClaimsFromTokenWithRolesFromDatabase(userDetails, authorities);
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    }
-
-    private UserDetails checkIfUserIsInDatabase(String email) throws UsernameNotFoundException {
-        Optional<ApplicationUser> applicationUserOptional = applicationUserRepository.findByEmail(email);
-
-        if(applicationUserOptional.isEmpty())
-            throw new UsernameNotFoundException(String.format("User with email %s not found", email));
-
-        return applicationUserOptional.get();
-    }
-
-    private void checkClaimsFromTokenWithRolesFromDatabase(UserDetails userDetails, Collection<SimpleGrantedAuthority> authoritiesFromToken)
-            throws AuthoritiesNotMatchWithTokenClaimsException {
-        Collection<SimpleGrantedAuthority> authoritiesFromDatabase =
-                userDetails.getAuthorities().stream().map(
-                        authority -> new SimpleGrantedAuthority(authority.getAuthority())
-                ).toList();
-
-        for (SimpleGrantedAuthority authority : authoritiesFromDatabase) {
-            if(!authoritiesFromToken.contains(authority))
-                throw new AuthoritiesNotMatchWithTokenClaimsException();
-        }
-
-        for (SimpleGrantedAuthority authority : authoritiesFromToken) {
-            if(!authoritiesFromDatabase.contains(authority))
-                throw new AuthoritiesNotMatchWithTokenClaimsException();
-        }
     }
 
     @Override

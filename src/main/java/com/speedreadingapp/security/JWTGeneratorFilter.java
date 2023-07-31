@@ -85,14 +85,9 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
         new ObjectMapper().writeValue(response.getOutputStream(), responseDTO);
     }
 
-    private List<String> retrieveAuthorities(Authentication authentication) {
-        return authentication.getAuthorities()
-                .stream().map(GrantedAuthority::getAuthority).toList();
-    }
-
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException, ServletException {
+                                              AuthenticationException failed) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         ApiResponse<String> apiResponse = ApiResponse
