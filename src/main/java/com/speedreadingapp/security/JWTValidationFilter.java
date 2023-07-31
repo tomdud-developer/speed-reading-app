@@ -35,7 +35,7 @@ public class JWTValidationFilter extends OncePerRequestFilter {
         if (!shouldNotFilter(request) && JWTTokenUtils.isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
             String token = JWTTokenUtils.retrieveTokenFromHeader(authorizationHeader);
             try {
-                jwtTokenService.validateAccessToken(token);
+                jwtTokenService.validate(token);
                 filterChain.doFilter(request, response);
             } catch (JWTVerificationException | UsernameNotFoundException | AuthoritiesNotMatchWithTokenClaimsException exception) {
                 ApiResponse<String> apiResponse = ApiResponse

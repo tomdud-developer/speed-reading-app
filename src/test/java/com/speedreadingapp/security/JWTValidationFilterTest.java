@@ -58,6 +58,7 @@ class JWTValidationFilterTest {
                 .withClaim("username", applicationUser.getEmail())
                 .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
                 .withClaim("generation-datetime", Instant.now())
+                .withClaim("token-type", "access_token")
                 .sign(jwtAlgorithmProvider.getAlgorithm());
 
         //when
@@ -114,6 +115,7 @@ class JWTValidationFilterTest {
                 .withClaim("username", applicationUser.getEmail())
                 .withClaim("roles", listClaims)
                 .withClaim("generation-datetime", Instant.now())
+                .withClaim("token-type", "access_token")
                 .sign(jwtAlgorithmProvider.getAlgorithm());
 
         //when

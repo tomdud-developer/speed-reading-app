@@ -1,6 +1,7 @@
 package com.speedreadingapp.controller;
 
 import com.speedreadingapp.dto.ApiResponse;
+import com.speedreadingapp.dto.RefreshTokenResponseDTO;
 import com.speedreadingapp.dto.RegisterRequestDTO;
 import com.speedreadingapp.security.token.JWTTokenService;
 import com.speedreadingapp.security.token.JWTTokenUtils;
@@ -26,11 +27,13 @@ public class TokenController {
 
         log.info("TokenController::refresh token from Authorization header is {}", refreshToken);
 
+        String accessToken = jwtTokenService.generateAccessTokenBasedOnRefreshToken(
+                JWTTokenUtils.retrieveTokenFromHeader(refreshToken));
 
-        ApiResponse<String> responseDTO = ApiResponse
-                .<String>builder()
+        ApiResponse<RefreshTokenResponseDTO> responseDTO = ApiResponse
+                .<RefreshTokenResponseDTO>builder()
                 .status("Success")
-                .results(null)
+                .results(new RefreshTokenResponseDTO(accessToken))
                 .build();
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
