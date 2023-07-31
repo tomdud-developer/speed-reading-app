@@ -15,4 +15,6 @@ public class DuplicatedEmailValidator
   public boolean isValid(String value, ConstraintValidatorContext context) {
     return (value == null || value.isEmpty()) || applicationUserRepository.findByEmail(value).isEmpty();
   }
+
+
 }

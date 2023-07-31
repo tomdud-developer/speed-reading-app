@@ -3,7 +3,6 @@ package com.speedreadingapp.controller;
 import com.speedreadingapp.dto.RegisterRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.repository.ApplicationUserRepository;
-import com.speedreadingapp.service.ApplicationUserService;
 import com.speedreadingapp.service.ValueMapper;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
 import org.aspectj.lang.annotation.Before;
@@ -12,21 +11,17 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,12 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class LoginAndRegisterControllerTest {
+class RegisterControllerTest {
 
     private static final String REGISTER_ENDPOINT_URL = "/api/v1/register";
 
     @InjectMocks
-    private LoginAndRegisterController loginAndRegisterController;
+    private RegisterController registerController;
 
     @MockBean
     private ApplicationUserRepository applicationUserRepository;
@@ -50,7 +45,7 @@ class LoginAndRegisterControllerTest {
 
     @Before("register")
     public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.loginAndRegisterController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(this.registerController).build();
     }
 
     @Test

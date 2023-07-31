@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v2")
 @AllArgsConstructor
 @Slf4j
-public class LoginAndRegisterController {
+public class RegisterController {
 
     private final ApplicationUserService applicationUserService;
 

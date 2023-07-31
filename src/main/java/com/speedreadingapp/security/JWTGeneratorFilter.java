@@ -78,8 +78,16 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
+        tokens.put("token_type", "bearer");
+        tokens.put("expires_in", jwtConfigurationProperties.getAccessTokenExpirationInMinutes() * 60 + "");
 
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        ApiResponse<Map<String, String>> responseDTO = ApiResponse
+                .<Map<String, String>>builder()
+                .status("SUCCESS")
+                .results(tokens)
+                .build();
+
+        new ObjectMapper().writeValue(response.getOutputStream(), responseDTO);
     }
 
     private List<String> retrieveAuthorities(Authentication authentication) {
@@ -92,11 +100,11 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
                                               AuthenticationException failed) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ApiResponse<String> apiResponse = new ApiResponse<>();
-        List<ErrorDTO> errors = new ArrayList<>();
-        errors.add(new ErrorDTO("login or password", "Invalid login or password"));
-        apiResponse.setErrors(errors);
-        apiResponse.setStatus("UNAUTHORIZED");
+        ApiResponse<String> apiResponse = ApiResponse
+                .<String>builder()
+                .status("UNAUTHORIZED")
+                .errors(List.of(new ErrorDTO("login or password", "Invalid login or password")))
+                .build();
 
         response.setContentType("application/json");
         response.getWriter().write(new ObjectMapper().writeValueAsString(apiResponse));

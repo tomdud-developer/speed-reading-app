@@ -179,7 +179,7 @@ class JWTValidationFilterTest {
         //given
         ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
         String accessToken = JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() - 10000L)) // Create token with expired 10s ago
+                .withExpiresAt(new Date(System.currentTimeMillis() - 10000L)) // Create token with 10s expired period
                 .withSubject(applicationUser.getEmail())
                 .withClaim("username", applicationUser.getEmail())
                 .withClaim("roles", applicationUser.getRoles().stream().map(Role::toString).toList())
