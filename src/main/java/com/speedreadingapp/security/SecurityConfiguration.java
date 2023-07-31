@@ -35,6 +35,7 @@ public class SecurityConfiguration {
     private final JWTConfigurationProperties jwtConfigurationProperties;
     private final JWTAlgorithmProvider jwtAlgorithmProvider;
     private final ApplicationUserRepository applicationUserRepository;
+    private final JWTTokenService jwtTokenService;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -58,9 +59,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
-                        new JWTGeneratorFilter(authenticationManagerBean(),
-                                jwtAlgorithmProvider,
-                                jwtConfigurationProperties),
+                        new JWTGeneratorFilter(authenticationManagerBean(), jwtTokenService),
                         BasicAuthenticationFilter.class)
                 .addFilterBefore(
                         new JWTValidationFilter(jwtAlgorithmProvider, applicationUserRepository),
@@ -86,6 +85,7 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
 
 

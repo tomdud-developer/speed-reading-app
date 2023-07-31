@@ -33,14 +33,14 @@ import java.util.*;
 
 public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final JWTConfigurationProperties jwtConfigurationProperties;
     private final AuthenticationManager authenticationManager;
-    private final JWTAlgorithmProvider jwtAlgorithmProvider;
-    public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTAlgorithmProvider jwtAlgorithmProvider, JWTConfigurationProperties jwtConfigurationProperties) {
+    private final JWTTokenService jwtTokenService;
+
+
+    public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTTokenService jwtTokenService) {
         super(new AntPathRequestMatcher("/api/v2/login"));
         this.authenticationManager = authenticationManager;
-        this.jwtAlgorithmProvider = jwtAlgorithmProvider;
-        this.jwtConfigurationProperties = jwtConfigurationProperties;
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -58,28 +58,23 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication authenticationResult)
-            throws IOException {
+                                            FilterChain chain, Authentication authenticationResult
+    ) throws IOException {
 
-        String accessToken = JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * jwtConfigurationProperties.getAccessTokenExpirationInMinutes()))
-                .withSubject(authenticationResult.getName())
-                .withClaim("username", authenticationResult.getName())
-                .withClaim("roles", retrieveAuthorities(authenticationResult))
-                .withClaim("generation-datetime", Instant.now())
-                .sign(jwtAlgorithmProvider.getAlgorithm());
+        String accessToken = jwtTokenService.generateAccessToken(
+                authenticationResult,
+                request.getRequestURL().toString().replace("login", "token/verify")
+        );
 
-        String refreshToken = JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30L * 60 * jwtConfigurationProperties.getAccessTokenExpirationInMinutes()))
-                .withSubject(authenticationResult.getName())
-                .withIssuer(request.getRequestURL().toString())
-                .sign(jwtAlgorithmProvider.getAlgorithm());
+        String refreshToken = jwtTokenService.generateRefreshToken(
+                authenticationResult,
+                request.getRequestURL().toString().replace("login", "token/verify")
+        );
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
         tokens.put("token_type", "bearer");
-        tokens.put("expires_in", jwtConfigurationProperties.getAccessTokenExpirationInMinutes() * 60 + "");
 
         ApiResponse<Map<String, String>> responseDTO = ApiResponse
                 .<Map<String, String>>builder()
