@@ -2,6 +2,8 @@ package com.speedreadingapp.controller;
 
 import com.speedreadingapp.dto.ApiResponse;
 import com.speedreadingapp.dto.RegisterRequestDTO;
+import com.speedreadingapp.security.token.JWTTokenService;
+import com.speedreadingapp.security.token.JWTTokenUtils;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -12,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v2/token")
+@RequestMapping("/api/v2/token")
 @AllArgsConstructor
 @Slf4j
 public class TokenController {
+
+    private final JWTTokenService jwtTokenService;
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken) {
@@ -30,5 +34,21 @@ public class TokenController {
                 .build();
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse> verify(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+
+        log.info("TokenController::verify token from Authorization header is {}", token);
+
+        jwtTokenService.validate(JWTTokenUtils.retrieveTokenFromHeader(token));
+
+        ApiResponse<String> responseDTO = ApiResponse
+                .<String>builder()
+                .status("Success")
+                .results("Token is valid")
+                .build();
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

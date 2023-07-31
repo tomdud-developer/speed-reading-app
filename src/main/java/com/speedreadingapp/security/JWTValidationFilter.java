@@ -32,10 +32,10 @@ public class JWTValidationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (JWTTokenUtils.isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
+        if (!shouldNotFilter(request) && JWTTokenUtils.isContainAuthorizationHeaderWithBearerKeyword(authorizationHeader)) {
             String token = JWTTokenUtils.retrieveTokenFromHeader(authorizationHeader);
             try {
-                jwtTokenService.validate(token);
+                jwtTokenService.validateAccessToken(token);
                 filterChain.doFilter(request, response);
             } catch (JWTVerificationException | UsernameNotFoundException | AuthoritiesNotMatchWithTokenClaimsException exception) {
                 ApiResponse<String> apiResponse = ApiResponse
@@ -53,9 +53,10 @@ public class JWTValidationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().equals("/api/v2/login")
-                || request.getServletPath().equals("/api/v2/token/refresh")
-                || request.getServletPath().equals("/api/v2/register")
+        return request.getRequestURI().equals("/api/v2/login")
+                || request.getRequestURI().equals("/api/v2/token/refresh")
+                || request.getRequestURI().equals("/api/v2/register")
+                || request.getRequestURI().equals("/api/v2/token/verify")
                 ;
     }
 }

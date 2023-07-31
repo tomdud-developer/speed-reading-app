@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
-public class LoginAndRegisterExceptionHandler {
+public class RegisterExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -28,13 +28,5 @@ public class LoginAndRegisterExceptionHandler {
         serviceResponse.setErrors(errors);
         return serviceResponse;
     }
-
-/*    @ExceptionHandler(UserAlreadyRegisteredException.class)
-    public ApiResponse<?> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException exception) {
-        ApiResponse<?> serviceResponse = new ApiResponse<>();
-        serviceResponse.setStatus("FAILED");
-        serviceResponse.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
-        return serviceResponse;
-    }*/
 
 }

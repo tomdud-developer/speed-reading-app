@@ -52,9 +52,8 @@ public class JWTTokenService implements JWTManager {
     }
 
     @Override
-    public void validate(String token) throws JWTVerificationException, UsernameNotFoundException {
-        JWTVerifier verifier = JWT.require(jwtAlgorithmProvider.getAlgorithm()).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
+    public void validateAccessToken(String token) throws JWTVerificationException, UsernameNotFoundException {
+        DecodedJWT decodedJWT = validate(token);
 
         String email = decodedJWT.getSubject();
         String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
@@ -67,6 +66,14 @@ public class JWTTokenService implements JWTManager {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(email, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    }
+
+    @Override
+    public DecodedJWT validate(String token) throws JWTVerificationException {
+        JWTVerifier verifier = JWT.require(jwtAlgorithmProvider.getAlgorithm()).build();
+
+
+        return verifier.verify(token);
     }
 
     private List<String> retrieveAuthorities(Authentication authentication) {
