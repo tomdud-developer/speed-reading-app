@@ -37,7 +37,7 @@ public class JWTGeneratorFilter extends AbstractAuthenticationProcessingFilter {
     private final AuthenticationManager authenticationManager;
     private final JWTAlgorithmProvider jwtAlgorithmProvider;
     public JWTGeneratorFilter(AuthenticationManager authenticationManager, JWTAlgorithmProvider jwtAlgorithmProvider, JWTConfigurationProperties jwtConfigurationProperties) {
-        super(new AntPathRequestMatcher("/api/v1/login"));
+        super(new AntPathRequestMatcher("/api/v2/login"));
         this.authenticationManager = authenticationManager;
         this.jwtAlgorithmProvider = jwtAlgorithmProvider;
         this.jwtConfigurationProperties = jwtConfigurationProperties;

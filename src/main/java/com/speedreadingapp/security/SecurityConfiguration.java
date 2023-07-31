@@ -54,8 +54,8 @@ public class SecurityConfiguration {
                     return config;
                 }))
                 .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/register"))
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/login"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/register"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
                         new JWTGeneratorFilter(authenticationManagerBean(),
@@ -67,8 +67,8 @@ public class SecurityConfiguration {
                         BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/register")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/v1/login")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/register")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
                 )
                 .formLogin(Customizer.withDefaults())

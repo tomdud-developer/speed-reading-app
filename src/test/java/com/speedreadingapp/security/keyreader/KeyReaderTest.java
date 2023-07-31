@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KeyReaderTest {
 
-    private static final String TEST_FILE_NAME_PRIVATE_KEY = "private_key.pem";
-    private static final String TEST_FILE_NAME_PUBLIC_KEY = "public_key.pem";
+    private static final String TEST_FILE_NAME_PRIVATE_KEY = "testKey.pem";
+    private static final String TEST_FILE_NAME_PUBLIC_KEY = "testKey.pub.pem";
     private static final String ALGORITHM = "RSA";
 
     static PemKeyRetriever pemKeyRetriever;

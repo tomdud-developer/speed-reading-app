@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JWTGeneratorFilterTest {
 
-    private final String LOGIN_ENDPOINT = "/api/v1/login";
+    private final String LOGIN_ENDPOINT = "/api/v2/login";
 
     @MockBean
     private ApplicationUserRepository applicationUserRepository;
@@ -58,8 +58,8 @@ class JWTGeneratorFilterTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.access_token").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.refresh_token").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results.access_token").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results.refresh_token").exists());
     }
 
     @Test

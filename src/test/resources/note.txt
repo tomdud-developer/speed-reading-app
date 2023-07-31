@@ -1,3 +1,3 @@
-openssl genrsa -out testKey.pem 1024
-openssl rsa -in testKey.pem -pubout -outform PEM -out testKey.pub.pem
-openssl pkcs8 -topk8 -inform PEM -in testKey.pem -out testKey2.pem -nocrypt
+openssl genrsa -out testKey1.pem 1024
+openssl rsa -in testKey1.pem -pubout -outform PEM -out testKey.pub.pem
+openssl pkcs8 -topk8 -inform PEM -in testKey1.pem -out testKey.pem -nocrypt

@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RegisterControllerTest {
 
-    private static final String REGISTER_ENDPOINT_URL = "/api/v1/register";
+    private static final String REGISTER_ENDPOINT_URL = "/api/v2/register";
 
     @InjectMocks
     private RegisterController registerController;
