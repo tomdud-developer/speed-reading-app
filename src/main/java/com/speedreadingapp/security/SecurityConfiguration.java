@@ -1,6 +1,7 @@
 package com.speedreadingapp.security;
 
 import com.speedreadingapp.security.token.JWTTokenService;
+import com.speedreadingapp.util.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +53,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/register"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/token/*"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
                         new JWTGeneratorFilter(authenticationManagerBean(), jwtTokenService),
@@ -62,6 +64,7 @@ public class SecurityConfiguration {
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/register")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/token/*")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
                 )
                 .formLogin(Customizer.withDefaults())

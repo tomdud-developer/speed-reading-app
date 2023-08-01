@@ -21,12 +21,17 @@ public class ApplicationUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return getApplicationUser(email);
+    }
+
+    public ApplicationUser getApplicationUser(String email) throws UsernameNotFoundException {
 
         Optional<ApplicationUser> optionalUser = applicationUserRepository.findByEmail(email);
 
         if(optionalUser.isEmpty())
-                throw new UsernameNotFoundException(String.format("User with email %s not found", email));
-        else return optionalUser.get();
+            throw new UsernameNotFoundException(String.format("User with email %s not found", email));
+
+        return optionalUser.get();
     }
 
     public String register(RegisterRequestDTO registerRequestDTO) {

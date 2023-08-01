@@ -1,12 +1,16 @@
 package com.speedreadingapp.entity.exercise;
 
 import com.speedreadingapp.entity.ApplicationUser;
+import com.speedreadingapp.util.DifficultyLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -26,9 +30,19 @@ public class DisappearNumbersResult {
             strategy = GenerationType.SEQUENCE,
             generator = "disappear_number_result_sequence"
     )
-    @Immutable
     private long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "difficulty_level")
+    private DifficultyLevel difficultyLevel;
+
+    @Column(name = "time_resul_in_seconds")
+    private double timeResultInSeconds;
+
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     ApplicationUser applicationUser;
+
 }
