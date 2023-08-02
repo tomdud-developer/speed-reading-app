@@ -1,9 +1,11 @@
 package com.speedreadingapp.service;
 
-import com.speedreadingapp.dto.DisappearNumbersResultResponseDTO;
+import com.speedreadingapp.dto.exercise.DisappearNumbersResultResponseDTO;
 import com.speedreadingapp.dto.RegisterRequestDTO;
+import com.speedreadingapp.dto.exercise.SpeedMeterResultResponseDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.entity.exercise.DisappearNumbersResult;
+import com.speedreadingapp.entity.exercise.SpeedMeterResult;
 import com.speedreadingapp.util.Role;
 
 import java.time.LocalDate;
@@ -34,6 +36,16 @@ public class ValueMapper {
         dto.setDateTime(entity.getDateTime());
         dto.setTimeResultInSeconds(entity.getTimeResultInSeconds());
         dto.setDifficultyLevel(entity.getDifficultyLevel());
+
+        return dto;
+    }
+
+    public static SpeedMeterResultResponseDTO convertEntityToResponseDTO(SpeedMeterResult entity) {
+
+        SpeedMeterResultResponseDTO dto = new SpeedMeterResultResponseDTO();
+        dto.setDateTime(entity.getDateTime());
+        dto.setWordsPerMinute(entity.getWordsPerMinute());
+        dto.setNumberOfWords(entity.getNumberOfWords());
 
         return dto;
     }

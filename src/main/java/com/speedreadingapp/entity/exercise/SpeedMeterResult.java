@@ -1,7 +1,6 @@
 package com.speedreadingapp.entity.exercise;
 
 import com.speedreadingapp.entity.ApplicationUser;
-import com.speedreadingapp.util.DifficultyLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +31,9 @@ public class SpeedMeterResult {
 
     @Column(name = "words_per_minute")
     private double wordsPerMinute;
+
+    @Column(name = "number_of_words")
+    private int numberOfWords;
 
     @Column(name = "date_time")
     private LocalDateTime dateTime;

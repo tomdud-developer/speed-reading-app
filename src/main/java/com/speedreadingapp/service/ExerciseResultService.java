@@ -1,11 +1,15 @@
 package com.speedreadingapp.service;
 
 
-import com.speedreadingapp.dto.DisappearNumbersResultRequestDTO;
-import com.speedreadingapp.dto.DisappearNumbersResultResponseDTO;
+import com.speedreadingapp.dto.exercise.DisappearNumbersResultRequestDTO;
+import com.speedreadingapp.dto.exercise.DisappearNumbersResultResponseDTO;
+import com.speedreadingapp.dto.exercise.SpeedMeterResultRequestDTO;
+import com.speedreadingapp.dto.exercise.SpeedMeterResultResponseDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.entity.exercise.DisappearNumbersResult;
+import com.speedreadingapp.entity.exercise.SpeedMeterResult;
 import com.speedreadingapp.repository.DisappearNumbersResultRepository;
+import com.speedreadingapp.repository.SpeedMeterResultRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +24,7 @@ import java.util.List;
 public class ExerciseResultService {
 
     private final DisappearNumbersResultRepository disappearNumbersResultRepository;
+    private final SpeedMeterResultRepository speedMeterResultRepository;
     private final ApplicationUserService applicationUserService;
 
     @Transactional
@@ -39,7 +44,7 @@ public class ExerciseResultService {
         return ValueMapper.convertEntityToResponseDTO(disappearNumbersResult);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DisappearNumbersResultResponseDTO> getDisappearNumbersResults() {
 
         ApplicationUser applicationUser = getUserFromAuthContext();
@@ -61,9 +66,36 @@ public class ExerciseResultService {
         else if (principal instanceof String string)
             email = string;
         else
-            throw new SecurityException("Unsupported princiapl in context");
+            throw new SecurityException("Unsupported principal in context");
 
         return applicationUserService.getApplicationUser(email);
     }
+
+    @Transactional
+    public SpeedMeterResultResponseDTO saveSpeedMeterResult(SpeedMeterResultRequestDTO speedMeterResultRequestDTO) {
+        SpeedMeterResult speedMeterResult = new SpeedMeterResult(
+                0L,
+                speedMeterResultRequestDTO.getWordsPerMinute(),
+                speedMeterResultRequestDTO.getNumberOfWords(),
+                LocalDateTime.now(),
+                getUserFromAuthContext()
+        );
+
+        speedMeterResult = speedMeterResultRepository.save(speedMeterResult);
+
+        return ValueMapper.convertEntityToResponseDTO(speedMeterResult);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SpeedMeterResultResponseDTO> getSpeedMeterResults() {
+
+        ApplicationUser applicationUser = getUserFromAuthContext();
+
+        List<SpeedMeterResult> speedMeterResultResponseDTOList =
+                speedMeterResultRepository.findAllByUserId(applicationUser.getId());
+
+        return speedMeterResultResponseDTOList.stream().map(ValueMapper::convertEntityToResponseDTO).toList();
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.speedreadingapp.dto;
+package com.speedreadingapp.dto.exercise;
 
 
 import com.speedreadingapp.util.DifficultyLevel;

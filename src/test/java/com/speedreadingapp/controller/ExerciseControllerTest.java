@@ -1,13 +1,10 @@
 package com.speedreadingapp.controller;
 
-import com.speedreadingapp.dto.DisappearNumbersResultRequestDTO;
-import com.speedreadingapp.dto.RegisterRequestDTO;
+import com.speedreadingapp.dto.exercise.DisappearNumbersResultRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.entity.exercise.DisappearNumbersResult;
 import com.speedreadingapp.repository.ApplicationUserRepository;
 import com.speedreadingapp.repository.DisappearNumbersResultRepository;
-import com.speedreadingapp.service.ExerciseResultService;
-import com.speedreadingapp.service.ValueMapper;
 import com.speedreadingapp.util.DifficultyLevel;
 import com.speedreadingapp.util.MockApplicationUserFactory;
 import com.speedreadingapp.util.ObjectToJsonAsStringConverter;
@@ -42,9 +39,10 @@ class ExerciseControllerTest {
 
     private static final String EXERCISES_ENDPOINT_URL = "/api/v2/exercises-results";
     private static final String DISAPPEAR_NUMBERS_RESULTS_URL = EXERCISES_ENDPOINT_URL + "/disappear-numbers";
+    private static final String SPEED_METER_RESULTS_URL = EXERCISES_ENDPOINT_URL + "/speed-meter";
 
     @InjectMocks
-    private ExerciseResultController exerciseResultController;
+    private ExercisesResultsController exercisesResultsController;
 
     @MockBean
     private ApplicationUserRepository applicationUserRepository;
@@ -61,7 +59,7 @@ class ExerciseControllerTest {
 
     @Before("")
     public void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.exerciseResultController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(this.exercisesResultsController).build();
     }
 
     @Test
