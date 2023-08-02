@@ -1,6 +1,8 @@
 package com.speedreadingapp.security;
 
+import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.security.token.JWTTokenService;
+import com.speedreadingapp.service.ApplicationUserService;
 import com.speedreadingapp.util.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,6 +57,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/register"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/token/*"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
@@ -65,6 +70,7 @@ public class SecurityConfiguration {
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/token/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
@@ -82,9 +88,6 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-
-
 
 }
 

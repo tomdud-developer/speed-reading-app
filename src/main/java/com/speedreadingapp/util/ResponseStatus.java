@@ -4,6 +4,7 @@ public class ResponseStatus {
 
     private ResponseStatus(){}
 
-    public static String SUCCESS = "Success";
+    public static final String SUCCESS = "Success";
+    public static final String ERROR = "Error";
 
 }

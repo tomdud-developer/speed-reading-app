@@ -41,6 +41,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.3'
 }
 
 dependencyManagement {
