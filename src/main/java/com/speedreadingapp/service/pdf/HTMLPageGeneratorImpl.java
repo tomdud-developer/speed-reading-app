@@ -2,11 +2,15 @@ package com.speedreadingapp.service.pdf;
 
 import com.speedreadingapp.exception.PDFServiceException;
 import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.fit.pdfdom.PDFDomTree;
+
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -44,17 +48,16 @@ public class HTMLPageGeneratorImpl implements HtmlPageGenerator, AutoCloseable {
         List<HTMLPageFromPDF> listOfHTMLPages = new ArrayList<>();
         int wordCounter = 0;
         int currentPage = fromPage - 1;
-
         while (wordCounter < desiredNumberOfWords) {
+            if (currentPage >= pdf.getNumberOfPages()) throw new PDFServiceException(String.format(
+                        "Starting from %d page it is impossible to achieve %d words.", fromPage, desiredNumberOfWords));
+
             HTMLPageFromPDF htmlPageFromPDF = generatePage(currentPage);
             wordCounter += htmlPageFromPDF.getWordsOnPage();
 
             listOfHTMLPages.add(htmlPageFromPDF);
 
             currentPage++;
-            if (currentPage >= pdf.getNumberOfPages())
-                throw new PDFServiceException(String.format(
-                        "Starting from %d page it is impossible to achieve %d words.", fromPage, desiredNumberOfWords));
         }
 
         return listOfHTMLPages;
@@ -69,9 +72,11 @@ public class HTMLPageGeneratorImpl implements HtmlPageGenerator, AutoCloseable {
             newPFDWithOnePage.addPage(pagesTree.get(pageNumber));
 
             String html = new PDFDomTree().getText(newPFDWithOnePage);
+            String unescapedHtml = StringEscapeUtils.unescapeJava(html);
+
             int numberOfWords = countNumberOfWordsInPDF(newPFDWithOnePage);
 
-            return new HTMLPageFromPDF(html ,pageNumber, numberOfWords);
+            return new HTMLPageFromPDF(unescapedHtml ,pageNumber + 1, numberOfWords);
         } catch (IOException e) {
             throw new PDFServiceException("Exception when creating html page from pdf");
         }

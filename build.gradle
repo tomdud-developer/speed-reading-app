@@ -43,6 +43,8 @@ dependencies {
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 	implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.3'
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+
 }
 
 dependencyManagement {
