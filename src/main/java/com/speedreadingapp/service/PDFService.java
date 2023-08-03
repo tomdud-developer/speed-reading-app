@@ -1,10 +1,14 @@
 package com.speedreadingapp.service;
 
+import com.speedreadingapp.dto.PDFNamesResponseDTO;
+import com.speedreadingapp.dto.PDFPagesRequestDTO;
 import com.speedreadingapp.dto.PDFRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.entity.PDF;
 import com.speedreadingapp.exception.PDFServiceException;
 import com.speedreadingapp.repository.PDFRepository;
+import com.speedreadingapp.service.pdf.HTMLPageFromPDF;
+import com.speedreadingapp.service.pdf.HTMLPageGeneratorImpl;
 import lombok.AllArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.fit.pdfdom.PDFDomTree;
@@ -18,6 +22,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,20 +39,55 @@ public class PDFService {
         MultipartFile multipartFile = pdfRequestDTO.getFile();
         ApplicationUser applicationUser = applicationUserService.getUserFromAuthContext();
 
-        checkExtensionIfItsNotPDFThrowException(multipartFile.getOriginalFilename());
+        checkExtensionIfItsNotPDFThrowException(
+                Objects.requireNonNull(multipartFile.getOriginalFilename())
+        );
 
         checkIfFileWithThatNameIsInDatabaseAndThrowExceptionIfIts(
                 pdfRequestDTO.getName(), applicationUser);
 
+        byte[] bytes = getBytesFromFile(multipartFile);
 
         PDF pdf = new PDF(
                 0L,
                 pdfRequestDTO.getName(),
-                getBytesFromFile(multipartFile),
+                loadBytesToPDDocumentAndReturnNumberOfPages(bytes),
+                bytes,
                 applicationUser
         );
 
         pdfRepository.save(pdf);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PDFNamesResponseDTO> getListOfPDFsNames() {
+
+        ApplicationUser applicationUser = applicationUserService.getUserFromAuthContext();
+
+        return pdfRepository.findAllByUserId(applicationUser.getId())
+                .stream().map(pdf -> new PDFNamesResponseDTO(pdf.getName(), pdf.getNumberOfPages())).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<HTMLPageFromPDF> getListOfPagesInHTML(PDFPagesRequestDTO pdfPagesRequestDTO) {
+
+        ApplicationUser applicationUser = applicationUserService.getUserFromAuthContext();
+
+        Optional<PDF> optionalPDF = pdfRepository.findPDFByNameAndUserId(
+                applicationUser.getId(), pdfPagesRequestDTO.getPdfName());
+
+        if (optionalPDF.isEmpty()) throw new PDFServiceException(
+                String.format("File with name %s not found in repository", pdfPagesRequestDTO.getPdfName()));
+
+        try (HTMLPageGeneratorImpl htmlPageGenerator =
+                     HTMLPageGeneratorImpl.createFrom(optionalPDF.get().getContent())) {
+            return htmlPageGenerator.generatePages(
+                    pdfPagesRequestDTO.getDesiredWords(),
+                    pdfPagesRequestDTO.getFromPage()
+            );
+        } catch (IOException exception) {
+            throw new PDFServiceException("Exception when generating HTML pages");
+        }
     }
 
     private void checkIfFileWithThatNameIsInDatabaseAndThrowExceptionIfIts(
@@ -70,6 +111,14 @@ public class PDFService {
             return multipartFile.getBytes();
         } catch (IOException exception) {
             throw new PDFServiceException("Failed when getting bytes from file");
+        }
+    }
+
+    private int loadBytesToPDDocumentAndReturnNumberOfPages(byte[] bytes) {
+        try (PDDocument pdDocument = PDDocument.load(bytes);) {
+            return pdDocument.getNumberOfPages();
+        } catch (IOException e) {
+            throw new PDFServiceException("Exception when load bytes to PDDocument");
         }
     }
 

@@ -31,6 +31,9 @@ public class PDF {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "number_of_pages")
+    private int numberOfPages;
+
     @Lob @Basic(fetch = FetchType.LAZY)
     @Column(name = "content", columnDefinition = "LONGBLOB")
     private byte[] content;

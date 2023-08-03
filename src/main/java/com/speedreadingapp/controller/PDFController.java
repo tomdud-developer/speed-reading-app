@@ -2,18 +2,20 @@ package com.speedreadingapp.controller;
 
 
 import com.speedreadingapp.dto.ApiResponse;
+import com.speedreadingapp.dto.PDFNamesResponseDTO;
+import com.speedreadingapp.dto.PDFPagesRequestDTO;
 import com.speedreadingapp.dto.PDFRequestDTO;
 import com.speedreadingapp.service.PDFService;
+import com.speedreadingapp.service.pdf.HTMLPageFromPDF;
 import com.speedreadingapp.util.ResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v2/pdfs")
@@ -39,6 +41,34 @@ public class PDFController {
                 .build();
 
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping ("/list")
+    public ResponseEntity<ApiResponse<List<PDFNamesResponseDTO>>> getListOfPDFsNames() {
+
+        List<PDFNamesResponseDTO> listOfPDFsNames = pdfService.getListOfPDFsNames();
+
+        ApiResponse<List<PDFNamesResponseDTO>> apiResponse = ApiResponse
+                .<List<PDFNamesResponseDTO>>builder()
+                .status(ResponseStatus.SUCCESS)
+                .results(listOfPDFsNames)
+                .build();
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping ("/pages")
+    public ResponseEntity<ApiResponse<List<HTMLPageFromPDF>>> getListOfHTMLPages(@RequestBody PDFPagesRequestDTO pdfPagesRequestDTO) {
+
+        List<HTMLPageFromPDF> listOfPages = pdfService.getListOfPagesInHTML(pdfPagesRequestDTO);
+
+        ApiResponse<List<HTMLPageFromPDF>> apiResponse = ApiResponse
+                .<List<HTMLPageFromPDF>>builder()
+                .status(ResponseStatus.SUCCESS)
+                .results(listOfPages)
+                .build();
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
 }

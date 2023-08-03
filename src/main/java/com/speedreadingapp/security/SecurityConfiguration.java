@@ -58,6 +58,8 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/token/*"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/list"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/pages"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
@@ -71,6 +73,8 @@ public class SecurityConfiguration {
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/token/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/pages")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/list")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
