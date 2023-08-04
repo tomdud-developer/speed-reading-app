@@ -45,7 +45,7 @@ class JWTGeneratorFilterTest {
 
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         loginRequestDTO.setEmail("test@test.com");
-        loginRequestDTO.setPassword("testPassword");
+        loginRequestDTO.setPassword("password");
 
         Mockito.when(applicationUserRepository.findByEmail(applicationUser.getEmail()))
                 .thenReturn(Optional.of(applicationUser));

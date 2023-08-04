@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0'
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -41,6 +43,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.3'
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+
 }
 
 dependencyManagement {

@@ -17,7 +17,7 @@ public class MockApplicationUserFactory {
         RegisterRequestDTO registerRequestDTO = RegisterRequestDTO
                 .builder()
                 .email("test@test.com")
-                .password(passwordEncoder.encode("testPassword"))
+                .password(passwordEncoder.encode("password"))
                 .firstname("testFirstname")
                 .lastname("testLastname")
                 .build();

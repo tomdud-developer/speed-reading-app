@@ -1,15 +1,12 @@
 package com.speedreadingapp.entity.exercise;
 
 import com.speedreadingapp.entity.ApplicationUser;
-import com.speedreadingapp.util.DifficultyLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Immutable;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,27 +14,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "disappear_number_result")
-public class DisappearNumbersResult {
+@Table(name = "speed_meter_result")
+public class SpeedMeterResult {
 
     @Id
     @SequenceGenerator(
-            name = "disappear_number_result_sequence",
-            sequenceName = "disappear_number_result_sequence",
+            name = "speed_meter_result_sequence",
+            sequenceName = "speed_meter_result_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "disappear_number_result_sequence"
+            generator = "speed_meter_result_sequence"
     )
     private long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "difficulty_level")
-    private DifficultyLevel difficultyLevel;
+    @Column(name = "words_per_minute")
+    private double wordsPerMinute;
 
-    @Column(name = "time_resul_in_seconds")
-    private double timeResultInSeconds;
+    @Column(name = "number_of_words")
+    private int numberOfWords;
 
     @Column(name = "date_time")
     private LocalDateTime dateTime;

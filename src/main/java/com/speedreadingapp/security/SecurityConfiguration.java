@@ -1,6 +1,9 @@
 package com.speedreadingapp.security;
 
+import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.security.token.JWTTokenService;
+import com.speedreadingapp.service.ApplicationUserService;
+import com.speedreadingapp.util.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -52,6 +57,10 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/register"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/login"))
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/token/*"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/list"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/pages"))
+                        .ignoringRequestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers"))
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(
                         new JWTGeneratorFilter(authenticationManagerBean(), jwtTokenService),
@@ -62,7 +71,21 @@ public class SecurityConfiguration {
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/register")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/login")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/token/*")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/exercises-results/disappear-numbers")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/pages")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/list")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v*/api-docs")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v*/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/configuration/security")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
+
                 )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
@@ -79,9 +102,6 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-
-
 
 }
 

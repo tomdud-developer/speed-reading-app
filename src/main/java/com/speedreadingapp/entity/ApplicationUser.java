@@ -1,6 +1,7 @@
 package com.speedreadingapp.entity;
 
 import com.speedreadingapp.entity.exercise.DisappearNumbersResult;
+import com.speedreadingapp.entity.exercise.SpeedMeterResult;
 import com.speedreadingapp.util.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -64,6 +65,9 @@ public class ApplicationUser implements UserDetails {
 
     @OneToMany(mappedBy = "applicationUser", cascade = CascadeType.ALL)
     private Set<DisappearNumbersResult> disappearNumbersResults = new HashSet<>();
+
+    @OneToMany(mappedBy = "applicationUser", cascade = CascadeType.ALL)
+    private Set<SpeedMeterResult> speedMeterResults = new HashSet<>();
 
 
     @Override
