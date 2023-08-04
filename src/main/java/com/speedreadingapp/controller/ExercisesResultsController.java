@@ -7,6 +7,7 @@ import com.speedreadingapp.dto.exercise.DisappearNumbersResultResponseDTO;
 import com.speedreadingapp.dto.exercise.SpeedMeterResultRequestDTO;
 import com.speedreadingapp.dto.exercise.SpeedMeterResultResponseDTO;
 import com.speedreadingapp.service.ExerciseResultService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class ExercisesResultsController {
 
     private final ExerciseResultService exerciseResultService;
 
+    @SecurityRequirement(name = "BearerToken")
     @PostMapping("/disappear-numbers")
     public ResponseEntity<ApiResponse<DisappearNumbersResultResponseDTO>> saveDisappearNumbersResult(
             @RequestBody @Valid DisappearNumbersResultRequestDTO disappearNumbersResultRequestDTO) {

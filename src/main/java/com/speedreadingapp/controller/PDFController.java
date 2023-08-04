@@ -8,6 +8,8 @@ import com.speedreadingapp.dto.PDFRequestDTO;
 import com.speedreadingapp.service.PDFService;
 import com.speedreadingapp.service.pdf.HTMLPageFromPDF;
 import com.speedreadingapp.util.ResponseStatus;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,14 @@ import java.util.List;
 @RequestMapping("api/v2/pdfs")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "PDF Controller")
 public class PDFController {
     private final PDFService pdfService;
 
+    @Operation(
+            description = "Upload PDF to server resources to use it in exercises",
+            summary = "POST PDF"
+    )
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> uploadPdf(@RequestParam MultipartFile file, @RequestParam String name) {
 
