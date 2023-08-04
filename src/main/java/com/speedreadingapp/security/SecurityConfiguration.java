@@ -76,6 +76,16 @@ public class SecurityConfiguration {
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/pages")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/v2/pdfs/list")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/test")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v*/api-docs")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v*/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/configuration/ui")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/configuration/security")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
+
                 )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
