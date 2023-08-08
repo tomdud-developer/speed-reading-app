@@ -1,5 +1,6 @@
 package com.speedreadingapp.controller;
 
+import com.speedreadingapp.dto.PDFPagesRequestDTO;
 import com.speedreadingapp.dto.PDFRequestDTO;
 import com.speedreadingapp.entity.ApplicationUser;
 import com.speedreadingapp.entity.PDF;
@@ -40,6 +41,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,6 +53,7 @@ class PDFControllerTest {
 
     private static final String PDF_ENDPOINT_URL = "/api/v2/pdfs";
     private static final String PDF_LIST_ENDPOINT_URL = "/api/v2/pdfs/list";
+    private static final String PDF_PAGES_ENDPOINT_URL = "/api/v2/pdfs/pages";
 
     @InjectMocks
     private PDFController pdfController;
@@ -174,8 +177,125 @@ class PDFControllerTest {
     }
 
     @Test
-    void getListOfHTMLPages() {
+    @WithMockUser(value = "test@test.com")
+    void getListOfHTMLPages() throws Exception {
+        //given
+        MockMultipartFile sampleFile = getTestPdfFile();
+
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
+        PDF returnedPDF = new PDF(
+                12L,
+                "Sample book",
+                5,
+                sampleFile.getBytes(),
+                applicationUser
+        );
+
+
+        PDFPagesRequestDTO pdfPagesRequestDTO = PDFPagesRequestDTO.builder()
+                .fromPage(1)
+                .pdfName(returnedPDF.getName())
+                .desiredWords(1000)
+                .build();
+
+        //then
+        when(pdfRepository.findPDFByNameAndUserId(any(), eq(pdfPagesRequestDTO.getPdfName()))).thenReturn(Optional.of(returnedPDF));
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail())).thenReturn(Optional.of(applicationUser));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(PDF_PAGES_ENDPOINT_URL)
+                        .content(Objects.requireNonNull(ObjectToJsonAsStringConverter.convert(pdfPagesRequestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.results").isArray()
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.results", Matchers.hasSize(3))
+                );
     }
+
+    @Test
+    @WithMockUser(value = "test@test.com")
+    void getListOfHTMLPagesFailedBecauseTooMuchWordsRequested() throws Exception {
+        //given
+        MockMultipartFile sampleFile = getTestPdfFile();
+
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
+        PDF returnedPDF = new PDF(
+                12L,
+                "Sample book",
+                5,
+                sampleFile.getBytes(),
+                applicationUser
+        );
+
+
+        PDFPagesRequestDTO pdfPagesRequestDTO = PDFPagesRequestDTO.builder()
+                .fromPage(1)
+                .pdfName(returnedPDF.getName())
+                .desiredWords(100000)
+                .build();
+
+        //then
+        when(pdfRepository.findPDFByNameAndUserId(any(), eq(pdfPagesRequestDTO.getPdfName()))).thenReturn(Optional.of(returnedPDF));
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail())).thenReturn(Optional.of(applicationUser));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(PDF_PAGES_ENDPOINT_URL)
+                        .content(Objects.requireNonNull(ObjectToJsonAsStringConverter.convert(pdfPagesRequestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.errors[0].errorMessage")
+                                .value(String.format("Starting from %d page it is impossible to achieve %d words.",
+                                        pdfPagesRequestDTO.getFromPage(), pdfPagesRequestDTO.getDesiredWords()))
+                );
+    }
+
+    @Test
+    @WithMockUser(value = "test@test.com")
+    void getListOfHTMLPagesFailedBecauseTooHighPageRequested() throws Exception {
+        //given
+        MockMultipartFile sampleFile = getTestPdfFile();
+
+        ApplicationUser applicationUser = mockApplicationUserFactory.getMockUserWithHashedPassword();
+
+        PDF returnedPDF = new PDF(
+                12L,
+                "Sample book",
+                5,
+                sampleFile.getBytes(),
+                applicationUser
+        );
+
+
+        PDFPagesRequestDTO pdfPagesRequestDTO = PDFPagesRequestDTO.builder()
+                .fromPage(100)
+                .pdfName(returnedPDF.getName())
+                .desiredWords(500)
+                .build();
+
+        //then
+        when(pdfRepository.findPDFByNameAndUserId(any(), eq(pdfPagesRequestDTO.getPdfName()))).thenReturn(Optional.of(returnedPDF));
+        when(applicationUserRepository.findByEmail(applicationUser.getEmail())).thenReturn(Optional.of(applicationUser));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(PDF_PAGES_ENDPOINT_URL)
+                        .content(Objects.requireNonNull(ObjectToJsonAsStringConverter.convert(pdfPagesRequestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        MockMvcResultMatchers.jsonPath("$.errors[0].errorMessage")
+                                .value(String.format("The page number %d is greater than numbers of page",
+                                        pdfPagesRequestDTO.getFromPage()))
+                );
+    }
+
 
     private MockMultipartFile getTestPdfFile() {
         try (InputStream inputStream = PDFControllerTest.class
