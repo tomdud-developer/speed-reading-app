@@ -21,6 +21,6 @@ public class PDFExceptionHandler {
         apiResponse.setStatus(ResponseStatus.ERROR);
         apiResponse.setErrors(Collections.singletonList(new ErrorDTO("name or file", exception.getMessage())));
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 }

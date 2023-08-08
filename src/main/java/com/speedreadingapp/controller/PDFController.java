@@ -61,7 +61,7 @@ public class PDFController {
                 .results(listOfPDFsNames)
                 .build();
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @GetMapping ("/pages")
